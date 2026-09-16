@@ -1,0 +1,55 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import { SITE } from '../consts';
+
+const projetos = (await getCollection('projetos', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.ano - a.data.ano,
+);
+---
+
+<Layout description={SITE.description}>
+  <section class="py-12">
+    <h1 class="text-4xl font-semibold tracking-tight text-balance">
+      Desenvolvedor freelancer de projetos web
+    </h1>
+    <p class="mt-4 max-w-prose text-lg text-neutral-400">
+      {SITE.description}
+    </p>
+  </section>
+
+  <section aria-labelledby="projetos-titulo" class="border-t border-neutral-800 pt-12">
+    <h2 id="projetos-titulo" class="text-sm font-medium tracking-widest text-neutral-500 uppercase">
+      Projetos
+    </h2>
+
+    <ul class="mt-8 space-y-8">
+      {
+        projetos.map((projeto) => (
+          <li>
+            <article>
+              <h3 class="text-xl font-medium">
+                <a href={`/projetos/${projeto.id}`} class="hover:underline">
+                  {projeto.data.title}
+                </a>
+              </h3>
+              <p class="mt-2 text-neutral-400">{projeto.data.description}</p>
+              <p class="mt-3 flex flex-wrap gap-2 text-xs text-neutral-500">
+                <span>{projeto.data.ano}</span>
+                {projeto.data.stack.map((tec) => (
+                  <span class="rounded border border-neutral-800 px-2 py-0.5">{tec}</span>
+                ))}
+              </p>
+            </article>
+          </li>
+        ))
+      }
+    </ul>
+
+    {projetos.length === 0 && (
+      <p class="mt-8 text-neutral-500">
+        Nenhum projeto publicado ainda. Adicione um arquivo em <code>src/content/projetos/</code>.
+      </p>
+    )}
+  </section>
+</Layout>

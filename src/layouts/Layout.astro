@@ -1,0 +1,40 @@
+---
+import '../styles/global.css';
+import SEO from '../components/SEO.astro';
+import { SITE } from '../consts';
+
+type SEOProps = Parameters<typeof SEO>[0];
+
+const props = Astro.props as SEOProps;
+---
+
+<!doctype html>
+<html lang={SITE.lang} class="scroll-smooth">
+  <head>
+    <SEO {...props} />
+  </head>
+  <body class="min-h-dvh bg-neutral-950 text-neutral-100 antialiased">
+    <a
+      href="#conteudo"
+      class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:rounded focus:bg-neutral-100 focus:px-3 focus:py-2 focus:text-neutral-900"
+    >
+      Pular para o conteúdo
+    </a>
+
+    <header class="mx-auto flex max-w-3xl items-center justify-between px-6 py-8">
+      <a href="/" class="font-semibold tracking-tight">{SITE.author}</a>
+      <nav aria-label="Principal" class="flex gap-6 text-sm text-neutral-400">
+        <a href="/" class="hover:text-neutral-100">Início</a>
+        <a href="/projetos" class="hover:text-neutral-100">Projetos</a>
+      </nav>
+    </header>
+
+    <main id="conteudo" class="mx-auto max-w-3xl px-6 pb-24">
+      <slot />
+    </main>
+
+    <footer class="mx-auto max-w-3xl px-6 py-10 text-sm text-neutral-500">
+      &copy; {new Date().getFullYear()} {SITE.author}
+    </footer>
+  </body>
+</html>
