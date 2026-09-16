@@ -1,36 +1,45 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
 
 const projetos = (await getCollection('projetos', ({ data }) => !data.draft)).sort(
-  (a, b) => b.data.ano - a.data.ano,
+  (a, b) => a.data.ordem - b.data.ordem || b.data.ano - a.data.ano,
 );
 ---
 
 <Layout
   title="Projetos"
-  description="Projetos freelance de desenvolvimento web entregues: escopo, stack e resultado de cada um."
+  description="Projetos de e-commerce e desenvolvimento web entregues pelo nosso time: escopo, stack e resultado de cada um."
 >
-  <h1 class="py-12 text-3xl font-semibold tracking-tight">Projetos</h1>
+  <section class="bg-butter-200 w-full py-20 sm:py-28">
+    <div class="mx-auto max-w-7xl px-6 sm:px-10">
+      <p class="text-ink-500 text-xs font-semibold tracking-widest uppercase">Portfólio</p>
+      <h1 class="display text-peri-500 mt-4 text-6xl sm:text-8xl">Projetos</h1>
+      <p class="text-ink-700 mt-6 max-w-xl text-lg leading-relaxed">
+        Cada card abre um estudo de caso com o contexto do cliente, as decisões técnicas e o
+        que foi medido depois da entrega.
+      </p>
+    </div>
+  </section>
 
-  <ul class="space-y-8 border-t border-neutral-800 pt-8">
-    {
-      projetos.map((projeto) => (
-        <li>
-          <article>
-            <h2 class="text-xl font-medium">
-              <a href={`/projetos/${projeto.id}`} class="hover:underline">
-                {projeto.data.title}
-              </a>
-            </h2>
-            <p class="mt-2 text-neutral-400">{projeto.data.description}</p>
-            <p class="mt-3 text-xs text-neutral-500">
-              {projeto.data.cliente && <span>{projeto.data.cliente} · </span>}
-              <span>{projeto.data.ano}</span>
-            </p>
-          </article>
-        </li>
-      ))
-    }
-  </ul>
+  <section class="bg-butter-50 w-full py-16 sm:py-20">
+    <div class="mx-auto max-w-7xl px-6 sm:px-10">
+      <div class="grid gap-6 sm:grid-cols-2">
+        {
+          projetos.map((projeto, i) => (
+            <ProjectCard projeto={projeto} tom={i % 2 === 0 ? 'creme' : 'branco'} />
+          ))
+        }
+      </div>
+
+      {
+        projetos.length === 0 && (
+          <p class="text-ink-500">
+            Nenhum projeto publicado. Adicione um arquivo em <code>src/content/projetos/</code>.
+          </p>
+        )
+      }
+    </div>
+  </section>
 </Layout>

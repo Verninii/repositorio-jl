@@ -1,0 +1,106 @@
+---
+import Icon from '../Icon.astro';
+import { SERVICOS, DESTAQUES } from '../../consts';
+
+interface Props {
+  /** Id da âncora usada pelo menu. */
+  id?: string;
+}
+
+const { id = 'frentes' } = Astro.props;
+
+// Numeração dos chips (01, 02, ...) — calculada no frontmatter para manter o
+// markup limpo e o índice sempre com dois dígitos.
+const servicos = SERVICOS.map((servico, i) => ({
+  ...servico,
+  indice: String(i + 1).padStart(2, '0'),
+}));
+---
+
+<!-- FRENTES DE ATUAÇÃO — faixa creme full width: título gigante azul, chips à
+     esquerda, texto editorial à direita e faixa azul de destaques no fim. -->
+<section id={id} class="bg-butter-200 w-full py-20 sm:py-28">
+  <div class="mx-auto max-w-7xl px-6 sm:px-10">
+    <!-- Cabeçalho da faixa. -->
+    <div class="border-ink-900/15 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-b pb-5">
+      <p class="text-peri-700 text-[0.7rem] font-semibold tracking-[0.32em] uppercase sm:text-xs">
+        Frentes de atuação
+      </p>
+      <p class="text-ink-700 text-[0.7rem] font-medium tracking-[0.18em] uppercase sm:text-xs">
+        {servicos.length} especialidades
+      </p>
+    </div>
+
+    <h2 class="display text-peri-500 mt-8 text-5xl text-balance sm:mt-10 sm:text-7xl lg:text-8xl">
+      O que fazemos
+    </h2>
+
+    <div class="mt-12 grid gap-x-12 gap-y-12 sm:mt-16 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
+      <!-- Coluna editorial: no desktop vai para a direita e alinha ao fim. -->
+      <div class="lg:order-2 lg:pt-2 lg:text-right">
+        <p class="text-ink-700 text-lg leading-relaxed text-pretty sm:text-xl">
+          Nosso time trabalha com escopo fechado e ciclos curtos: uma frente de cada vez, medida
+          antes e depois, sem entregar página bonita que trava no celular do cliente.
+        </p>
+        <p class="text-peri-700 mt-6 text-lg leading-relaxed font-medium text-pretty italic sm:text-xl">
+          “Loja rápida não é detalhe técnico — é receita.”
+        </p>
+        <p class="text-ink-700 mt-6 leading-relaxed text-pretty">
+          Cada projeto sai com código próprio, documentação e um ambiente de homologação aberto,
+          para que a sua equipe consiga assumir a manutenção sem depender da gente.
+        </p>
+      </div>
+
+      <!-- Coluna dos chips: barras azuis com caixa de ícone à esquerda. -->
+      <ul class="flex flex-col gap-3 lg:order-1" role="list">
+        {
+          servicos.map((servico) => (
+            <li class="bg-peri-500 flex items-start gap-4 rounded-xl p-4 sm:gap-5 sm:p-5">
+              <span
+                class="bg-butter-100 text-peri-700 grid size-12 shrink-0 place-items-center rounded-lg"
+                aria-hidden="true"
+              >
+                <Icon name={servico.icone} class="size-6" />
+              </span>
+
+              <div class="min-w-0">
+                <h3 class="flex flex-wrap items-baseline gap-x-2 text-sm font-semibold tracking-[0.12em] text-white uppercase sm:text-base">
+                  <span class="text-butter-200/80 text-xs font-semibold" aria-hidden="true">
+                    {servico.indice}
+                  </span>
+                  {servico.titulo}
+                </h3>
+                <p class="mt-2 text-sm leading-relaxed text-pretty text-white/80">
+                  {servico.texto}
+                </p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <!-- Faixa azul de destaques: ícone, número em display e rótulo. -->
+    <ul
+      class="bg-peri-500 divide-butter-200/25 mt-14 grid divide-y rounded-2xl sm:mt-20 sm:grid-cols-3 sm:divide-x sm:divide-y-0"
+      role="list"
+    >
+      {
+        DESTAQUES.map((destaque) => (
+          <li class="flex flex-col items-start gap-3 p-8 sm:items-center sm:p-10 sm:text-center">
+            <span
+              class="border-butter-200/40 text-butter-200 grid size-11 place-items-center rounded-lg border"
+              aria-hidden="true"
+            >
+              <Icon name={destaque.icone} class="size-5" />
+            </span>
+            <p class="display text-butter-200 text-4xl sm:text-5xl">{destaque.valor}</p>
+            <p class="text-xs font-semibold tracking-[0.22em] text-white/85 uppercase">
+              {destaque.label}
+            </p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,40 @@
+---
+title: 'Landing de lançamento — marca de suplementos'
+description: 'Página de lançamento com contagem regressiva, captura de lista de espera e checkout em uma etapa, construída para suportar pico de tráfego pago.'
+tipo: 'Landing page'
+ano: 2025
+stack: ['Astro', 'TypeScript', 'Tailwind CSS', 'Shopify Storefront API']
+accent: '#d97757'
+ordem: 3
+metricas:
+  - valor: '0,9s'
+    label: 'LCP no 4G simulado'
+  - valor: '100'
+    label: 'Lighthouse SEO'
+  - valor: '12k'
+    label: 'visitas no dia do lançamento'
+draft: false
+---
+
+{/* CONTEÚDO DE DEMONSTRAÇÃO — troque por um projeto real seu. */}
+
+## O contexto
+
+Marca de suplementos preparando o lançamento de uma linha nova, com investimento
+concentrado em tráfego pago nas primeiras 48 horas.
+
+## O desafio
+
+Campanha paga não perdoa página lenta: cada décimo de segundo a mais no carregamento
+queima orçamento de mídia. A página precisava ser estática, leve e ainda assim falar com
+o catálogo real da loja.
+
+## O que foi feito
+
+- Página estática em Astro, consumindo preço e estoque via Storefront API no build.
+- Contagem regressiva e captura de lista de espera sem framework no cliente.
+- Checkout em etapa única, com o carrinho pré-montado pelo link da campanha.
+
+## Resultado
+
+LCP de 0,9s em 4G simulado e nenhuma queda de disponibilidade durante o pico.

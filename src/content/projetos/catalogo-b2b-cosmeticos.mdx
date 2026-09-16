@@ -1,0 +1,39 @@
+---
+title: 'Catálogo B2B — distribuidora de cosméticos'
+description: 'Portal de pedidos para lojistas com tabela de preços por cliente, pedido mínimo por marca e integração de estoque com o ERP em tempo real.'
+tipo: 'Plataforma B2B'
+ano: 2025
+stack: ['Shopify Plus', 'Node.js', 'GraphQL', 'ERP']
+accent: '#6b7fd7'
+ordem: 4
+metricas:
+  - valor: '-70%'
+    label: 'tempo de digitação de pedido'
+  - valor: '4h → 5min'
+    label: 'atraso na sincronia de estoque'
+draft: false
+---
+
+{/* CONTEÚDO DE DEMONSTRAÇÃO — troque por um projeto real seu. */}
+
+## O contexto
+
+Distribuidora que atendia lojistas por WhatsApp e planilha, com a equipe interna
+redigitando cada pedido no ERP.
+
+## O desafio
+
+Cada lojista tem tabela de preço própria e regras de pedido mínimo diferentes por marca.
+Um catálogo público comum não dá conta — e o estoque precisa ser confiável, senão o
+vendedor perde a confiança na ferramenta no primeiro pedido furado.
+
+## O que foi feito
+
+- Catálogo autenticado, com preço e condição carregados por perfil de cliente.
+- Validação de pedido mínimo por marca direto no carrinho.
+- Serviço em Node.js sincronizando estoque e status de pedido com o ERP via webhook.
+
+## Resultado
+
+O tempo de digitação de pedido caiu cerca de 70% e a sincronia de estoque saiu de um
+lote a cada 4 horas para propagação em minutos.

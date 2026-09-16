@@ -1,40 +1,126 @@
 ---
 import '../styles/global.css';
+import { Font } from 'astro:assets';
 import SEO from '../components/SEO.astro';
 import { SITE } from '../consts';
 
 type SEOProps = Parameters<typeof SEO>[0];
 
 const props = Astro.props as SEOProps;
+const path = Astro.url.pathname;
+
+const nav = [
+  { href: '/projetos', label: 'Projetos' },
+  { href: '/#processo', label: 'Processo' },
+  { href: '/#depoimentos', label: 'Depoimentos' },
+];
+
+const isActive = (href: string) => href.startsWith('/') && !href.includes('#') && path.startsWith(href);
 ---
 
 <!doctype html>
-<html lang={SITE.lang} class="scroll-smooth">
+<html lang={SITE.lang}>
   <head>
     <SEO {...props} />
+    <Font cssVariable="--font-inter" preload />
+    <Font cssVariable="--font-archivo" preload />
   </head>
-  <body class="min-h-dvh bg-neutral-950 text-neutral-100 antialiased">
+  <body class="bg-butter-200 text-ink-900 font-sans min-h-dvh antialiased">
     <a
       href="#conteudo"
-      class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:rounded focus:bg-neutral-100 focus:px-3 focus:py-2 focus:text-neutral-900"
+      class="sr-only focus:not-sr-only focus:bg-ink-900 focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-full focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-white"
     >
       Pular para o conteúdo
     </a>
 
-    <header class="mx-auto flex max-w-3xl items-center justify-between px-6 py-8">
-      <a href="/" class="font-semibold tracking-tight">{SITE.author}</a>
-      <nav aria-label="Principal" class="flex gap-6 text-sm text-neutral-400">
-        <a href="/" class="hover:text-neutral-100">Início</a>
-        <a href="/projetos" class="hover:text-neutral-100">Projetos</a>
-      </nav>
+    <header class="bg-butter-200 sticky top-0 z-40 w-full">
+      <div
+        class="border-ink-900/10 mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 border-b px-6 sm:h-20 sm:px-10"
+      >
+        <a href="/" class="group flex shrink-0 items-center gap-2.5">
+          <!-- Logomark: anel + ponto, referência ao nome "Órbita". -->
+          <svg
+            viewBox="0 0 24 24"
+            class="text-peri-600 size-6 shrink-0 transition-transform group-hover:rotate-45"
+            aria-hidden="true"
+          >
+            <circle
+              cx="12"
+              cy="12"
+              r="8.5"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.8"
+              opacity="0.6"></circle>
+            <circle cx="19.5" cy="8.5" r="2.2" fill="currentColor"></circle>
+          </svg>
+          <span class="display text-peri-600 text-lg sm:text-xl">{SITE.company}</span>
+        </a>
+
+        <nav
+          aria-label="Principal"
+          class="hidden items-center gap-8 text-xs font-semibold tracking-widest uppercase md:flex"
+        >
+          {
+            nav.map((item) => (
+              <a
+                href={item.href}
+                aria-current={isActive(item.href) ? 'page' : undefined}
+                class:list={[
+                  'transition-colors',
+                  isActive(item.href) ? 'text-peri-600' : 'text-ink-700 hover:text-peri-600',
+                ]}
+              >
+                {item.label}
+              </a>
+            ))
+          }
+        </nav>
+
+        <a
+          href={`mailto:${SITE.email}`}
+          class="bg-peri-500 hover:bg-peri-600 shrink-0 rounded-full px-4 py-2.5 text-xs font-semibold tracking-widest whitespace-nowrap text-white uppercase transition-colors sm:px-5"
+        >
+          Contato
+        </a>
+      </div>
     </header>
 
-    <main id="conteudo" class="mx-auto max-w-3xl px-6 pb-24">
+    <main id="conteudo">
       <slot />
     </main>
 
-    <footer class="mx-auto max-w-3xl px-6 py-10 text-sm text-neutral-500">
-      &copy; {new Date().getFullYear()} {SITE.author}
+    <footer class="bg-peri-900 w-full">
+      <div class="text-peri-300 mx-auto max-w-7xl px-6 py-14 sm:px-10">
+        <div class="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p class="display text-butter-200 text-4xl sm:text-5xl">{SITE.company}</p>
+            <p class="mt-3 max-w-sm text-sm leading-relaxed">{SITE.tagline}</p>
+          </div>
+
+          <div class="flex flex-wrap gap-x-8 gap-y-2 text-sm">
+            <a href={`mailto:${SITE.email}`} class="transition-colors hover:text-white">
+              {SITE.email}
+            </a>
+            {
+              SITE.links.map((link) => (
+                <a
+                  href={link.href}
+                  rel="noopener noreferrer me"
+                  target="_blank"
+                  class="transition-colors hover:text-white"
+                >
+                  {link.label}
+                </a>
+              ))
+            }
+          </div>
+        </div>
+
+        <p class="border-peri-700 mt-12 border-t pt-6 text-xs">
+          &copy; {new Date().getFullYear()} {SITE.company}. Todos os direitos reservados.
+        </p>
+      </div>
     </footer>
   </body>
 </html>

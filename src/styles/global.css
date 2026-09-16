@@ -1,1 +1,70 @@
-@import "tailwindcss";
+@import 'tailwindcss';
+@plugin '@tailwindcss/typography';
+
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+
+  /* Creme — faixas claras. Dessaturado de propósito: o amarelo-manteiga
+     saturado brigava com o periwinkle. Hue quente, saturação baixa. */
+  --color-butter-50: #fbf8f2;
+  --color-butter-100: #f5f0e6;
+  --color-butter-200: #ede7d9;
+  --color-butter-300: #dbd2c0;
+
+  /* Azul periwinkle — faixas escuras, títulos sobre creme e CTAs.
+     peri-500 é 5% mais escuro que o azul da referência: no tom original,
+     texto branco sobre a faixa dava 3,87:1 e reprovava em AA. */
+  --color-peri-300: #a2afd7;
+  --color-peri-400: #7e90c8;
+  --color-peri-500: #5b71b9;
+  --color-peri-600: #465ca4;
+  --color-peri-700: #394a84;
+  --color-peri-900: #2c3963;
+
+  /* Texto. */
+  --color-ink-900: #16161a;
+  --color-ink-700: #3a3a42;
+  --color-ink-500: #676771;
+}
+
+html {
+  color-scheme: light;
+  scrollbar-gutter: stable;
+}
+
+/* Display da referência: pesado, caixa alta, bem apertado. */
+.display {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  /* 1.12 e não menos: acentos do português (Á, Ó, Ê) colidem com a linha
+     anterior em valores mais apertados. */
+  line-height: 1.12;
+}
+
+/* Faixa full-width: a cor vai de ponta a ponta, o conteúdo fica contido. */
+.faixa {
+  width: 100%;
+}
+.faixa > .interno {
+  margin-inline: auto;
+  max-width: 80rem;
+  padding-inline: 1.5rem;
+}
+@media (min-width: 640px) {
+  .faixa > .interno {
+    padding-inline: 2.5rem;
+  }
+}
+
+/* Respeita quem pediu menos movimento. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

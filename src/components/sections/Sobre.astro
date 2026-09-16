@@ -1,0 +1,138 @@
+---
+import { SITE, NUMEROS, CLIENTES } from '../../consts';
+
+interface Props {
+  /** Âncora da seção — o menu do layout aponta para cá. */
+  id?: string;
+}
+
+const { id = 'sobre' } = Astro.props;
+
+const tituloId = `${id}-titulo`;
+const clientesId = `${id}-clientes`;
+---
+
+<!-- SOBRE — faixa azul full width: texto à esquerda, cartão de marca à direita. -->
+<!-- scroll-mt-24 compensa o header sticky do Layout (h-16 / sm:h-20), no mesmo
+     padrão já usado na âncora #projetos da home. -->
+<section
+  id={id}
+  aria-labelledby={tituloId}
+  class="bg-peri-500 w-full scroll-mt-24 overflow-hidden py-20 sm:py-28"
+>
+  <div class="mx-auto max-w-7xl px-6 sm:px-10">
+    <div
+      class="grid gap-14 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:items-center lg:gap-16"
+    >
+      <!-- Coluna de texto: título gigante, apresentação curta e a linha de números. -->
+      <div>
+        <!-- Branco, e não creme: sobre peri-500 o branco é o maior contraste
+             disponível na paleta para texto pequeno. -->
+        <p class="text-xs font-semibold tracking-[0.32em] text-white uppercase sm:text-sm">
+          Sobre o estúdio
+        </p>
+
+        <h2
+          id={tituloId}
+          class="display text-butter-200 mt-5 text-5xl sm:text-6xl lg:text-7xl xl:text-8xl"
+        >
+          Somos
+          <span class="block">a {SITE.company}</span>
+        </h2>
+
+        <div
+          class="mt-8 max-w-xl space-y-5 text-base leading-relaxed text-pretty text-white sm:text-lg"
+        >
+          <p>
+            Somos um time pequeno e dedicado. Cada projeto é conduzido pelas mesmas pessoas do
+            primeiro diagnóstico até o dia da publicação — nada é repassado para terceiros.
+          </p>
+          <p>
+            Cuidamos do e-commerce de ponta a ponta: arquitetura do tema, integrações, performance e
+            mensuração. Escrevemos nosso próprio código e entregamos tudo documentado para o seu
+            time assumir quando quiser.
+          </p>
+        </div>
+
+        <!-- 4 colunas só a partir de md: em 640px as células ficariam com ~122px
+             e o valor "< 1,5s" em text-4xl vazaria por cima da coluna vizinha. -->
+        <dl
+          class="border-butter-200/30 mt-10 grid grid-cols-2 gap-x-6 gap-y-8 border-t pt-8 sm:mt-12 md:grid-cols-4"
+        >
+          {
+            NUMEROS.map((numero) => (
+              <div class="flex flex-col-reverse gap-2">
+                <dt class="text-xs leading-snug font-semibold tracking-[0.16em] text-white uppercase">
+                  {numero.label}
+                </dt>
+                <dd class="display text-butter-200 text-3xl lg:text-4xl">{numero.valor}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+
+      <!-- Cartão visual: sem foto, só gradiente e o logomark de órbita em SVG. -->
+      <div
+        class="border-butter-200/25 bg-peri-600 relative mx-auto w-full max-w-sm overflow-hidden rounded-2xl border lg:max-w-none"
+      >
+        <div class="relative aspect-[4/5]">
+          <!-- Brilho central: cor vem do token do tema, não de um rgba solto. -->
+          <div
+            class="absolute inset-0 bg-[radial-gradient(circle_at_50%_38%,var(--color-butter-200),transparent_64%)] opacity-25"
+            aria-hidden="true"
+          >
+          </div>
+          <div
+            class="from-peri-700/70 absolute inset-0 bg-linear-to-t via-transparent to-transparent"
+            aria-hidden="true"
+          >
+          </div>
+
+          <svg
+            viewBox="0 0 400 500"
+            fill="none"
+            class="absolute inset-0 size-full"
+            aria-hidden="true"
+          >
+            <circle cx="200" cy="250" r="162" class="stroke-butter-200/25" stroke-width="2" />
+            <circle cx="200" cy="250" r="112" class="stroke-butter-200/45" stroke-width="2" />
+            <circle cx="200" cy="250" r="64" class="stroke-butter-200/80" stroke-width="2.5" />
+            <circle cx="200" cy="250" r="17" class="fill-butter-200" />
+            <circle cx="200" cy="88" r="11" class="fill-butter-300" />
+            <circle cx="312" cy="250" r="8" class="fill-white/70" />
+          </svg>
+
+          <div class="absolute inset-x-0 bottom-0 flex flex-wrap items-baseline gap-x-3 gap-y-1 p-6">
+            <p class="display text-butter-200 text-lg">{SITE.company}</p>
+            <p class="text-xs font-semibold tracking-[0.2em] text-white uppercase">
+              {SITE.tagline}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Faixa clara de clientes: wordmarks em texto, sem imagem. -->
+    <div class="bg-butter-100 mt-14 rounded-2xl px-6 py-8 sm:mt-20 sm:px-10 sm:py-10">
+      <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:gap-12">
+        <h3
+          id={clientesId}
+          class="text-peri-700 shrink-0 text-xs font-semibold tracking-[0.32em] uppercase"
+        >
+          Confiam na gente
+        </h3>
+        <ul
+          aria-labelledby={clientesId}
+          class="flex flex-wrap items-center gap-x-8 gap-y-4 sm:gap-x-12"
+        >
+          {
+            CLIENTES.map((cliente) => (
+              <li class="display text-peri-700 text-lg sm:text-xl lg:text-2xl">{cliente}</li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>

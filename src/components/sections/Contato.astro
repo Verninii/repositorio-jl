@@ -1,0 +1,86 @@
+---
+import Icon from '../Icon.astro';
+import { SITE, STACK } from '../../consts';
+
+interface Props {
+  /** Âncora usada pelo menu do topo. */
+  id?: string;
+}
+
+const { id = 'contato' } = Astro.props;
+
+// Ids derivados da prop: o componente pode aparecer mais de uma vez na página
+// sem duplicar id no DOM (o que quebraria o aria-labelledby).
+const tituloId = `${id}-titulo`;
+const stackTituloId = `${id}-stack-titulo`;
+---
+
+<!-- STACK — faixa creme: rótulo à esquerda, tecnologias em pílulas. -->
+<section class="bg-butter-50 w-full py-20 sm:py-28">
+  <div class="mx-auto max-w-7xl px-6 sm:px-10">
+    <div class="grid gap-6 sm:grid-cols-[auto_minmax(0,1fr)] sm:items-start sm:gap-10">
+      <h2
+        id={stackTituloId}
+        class="text-ink-700 text-[0.7rem] font-semibold tracking-[0.32em] uppercase sm:pt-1.5 sm:text-xs"
+      >
+        Stack
+      </h2>
+
+      <ul aria-labelledby={stackTituloId} class="flex flex-wrap gap-2.5">
+        {
+          STACK.map((tecnologia) => (
+            <li class="border-ink-900/15 text-ink-700 rounded-xl border bg-white px-4 py-2 text-sm font-medium">
+              {tecnologia}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL — faixa azul escura full width, composição centralizada. -->
+<section
+  id={id}
+  aria-labelledby={tituloId}
+  class="bg-peri-900 relative w-full scroll-mt-24 overflow-hidden py-20 sm:py-28 lg:py-32"
+>
+  <!-- Enfeite: mesma órbita do hero, discreta atrás do texto. -->
+  <div class="pointer-events-none absolute inset-0 hidden sm:block" aria-hidden="true">
+    <svg viewBox="0 0 1200 600" fill="none" preserveAspectRatio="xMidYMid slice" class="size-full">
+      <circle cx="600" cy="300" r="250" class="stroke-peri-300/25" stroke-width="1.5" />
+      <circle cx="600" cy="300" r="380" class="stroke-peri-300/15" stroke-width="1.5" />
+      <circle cx="600" cy="50" r="7" class="fill-peri-300/50" />
+    </svg>
+  </div>
+
+  <div class="relative mx-auto max-w-7xl px-6 text-center sm:px-10">
+    <p class="text-butter-300 text-[0.7rem] font-semibold tracking-[0.32em] uppercase sm:text-xs">
+      {SITE.company} — Contato
+    </p>
+
+    <h2
+      id={tituloId}
+      class="display text-butter-200 mx-auto mt-6 max-w-5xl text-5xl text-balance sm:text-7xl lg:text-8xl"
+    >
+      Tem um projeto em mente?
+    </h2>
+
+    <p class="mx-auto mt-7 max-w-2xl text-base leading-relaxed text-pretty text-white/85 sm:text-lg">
+      Conte o que a sua operação precisa e nosso time devolve um diagnóstico honesto do escopo —
+      prazo, esforço e o que dá para cortar. Se não formos o time certo para o seu caso, dizemos
+      isso na primeira conversa.
+    </p>
+
+    <div class="mt-10 flex justify-center sm:mt-12">
+      <a
+        href={`mailto:${SITE.email}`}
+        class="bg-butter-200 text-ink-900 hover:bg-butter-100 focus-visible:outline-butter-200 inline-flex min-h-14 max-w-full items-center justify-center gap-3 rounded-full px-7 py-4 text-base font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-4 sm:px-10 sm:text-lg"
+        aria-label={`Enviar e-mail para ${SITE.email}`}
+      >
+        <Icon name="mail" class="size-5 shrink-0 sm:size-6" />
+        <span class="break-all">{SITE.email}</span>
+      </a>
+    </div>
+  </div>
+</section>
