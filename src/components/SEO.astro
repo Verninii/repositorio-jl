@@ -23,16 +23,17 @@ const {
   noindex = false,
 } = Astro.props;
 
-const pageTitle = title ? `${title} — ${SITE.author}` : SITE.title;
+const pageTitle = title ? `${title} — ${SITE.company}` : SITE.title;
 const canonical = new URL(Astro.url.pathname, SITE.url).href;
 const ogImage = new URL(image, SITE.url).href;
 
 const baseSchema = {
   '@context': 'https://schema.org',
-  '@type': 'Person',
-  name: SITE.author,
+  '@type': 'Organization',
+  name: SITE.company,
   url: SITE.url,
-  jobTitle: 'Desenvolvedor Web Freelancer',
+  description: SITE.description,
+  email: SITE.email,
 };
 const jsonLd = schema ?? baseSchema;
 ---

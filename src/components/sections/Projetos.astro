@@ -1,0 +1,182 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Icon from '../Icon.astro';
+import ProjectCard from '../ProjectCard.astro';
+import { FILTROS } from '../../consts';
+
+interface Props {
+  /** Projetos já ordenados/filtrados pela página que monta a seção. */
+  projetos?: CollectionEntry<'projetos'>[];
+}
+
+const { projetos = [] } = Astro.props;
+
+// Só entra na barra o filtro que tem projeto correspondente: botão que nunca
+// devolve resultado é ruído. `valor` casa exatamente com `tipo` do frontmatter.
+const tipos = new Set(projetos.map((projeto) => projeto.data.tipo));
+const filtros = FILTROS.filter((filtro) => filtro.valor === 'todos' || tipos.has(filtro.valor));
+// Com um só tipo publicado a barra vira decoração — nesse caso não renderiza.
+const mostrarFiltros = filtros.length > 2;
+
+// Fonte única das classes de estado: o frontmatter pinta o HTML inicial e o
+// script recebe as mesmas strings via define:vars. Ficam como literais para o
+// Tailwind conseguir enxergá-las na varredura do arquivo.
+const PILULA_BASE =
+  'inline-flex min-h-11 items-center rounded-full border px-5 py-2.5 text-sm font-semibold transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-butter-200 focus-visible:ring-offset-2 focus-visible:ring-offset-peri-500 focus-visible:outline-hidden';
+const PILULA_ATIVA = 'border-butter-200 bg-butter-200 text-ink-900';
+// border-white/70 e não /30: abaixo de 3:1 a borda do botão some sobre o azul.
+const PILULA_INATIVA = 'border-white/70 text-white hover:bg-white/10';
+
+const classesPilula = (ativa: boolean) =>
+  [PILULA_BASE, ativa ? PILULA_ATIVA : PILULA_INATIVA].join(' ');
+---
+
+<!-- PROJETOS — faixa azul full width: cabeçalho centralizado, filtros em pílula e grade de cards. -->
+<!-- scroll-mt compensa o header sticky (h-16 / sm:h-20) quando alguém chega pelo #projetos. -->
+<section
+  id="projetos"
+  aria-labelledby="projetos-titulo"
+  class="bg-peri-500 w-full scroll-mt-16 py-20 sm:scroll-mt-20 sm:py-28"
+>
+  <div class="mx-auto max-w-7xl px-6 sm:px-10">
+    <!-- Cabeçalho editorial centralizado. -->
+    <div class="mx-auto max-w-3xl text-center">
+      <p class="text-butter-200 text-xs font-semibold tracking-[0.32em] uppercase sm:text-sm">
+        Portfólio
+      </p>
+
+      <h2 id="projetos-titulo" class="display text-butter-200 mt-5 text-5xl sm:text-7xl lg:text-8xl">
+        Projetos
+      </h2>
+
+      <p class="mt-6 text-base leading-relaxed text-pretty text-white sm:text-lg">
+        Uma seleção do que nosso time colocou no ar: lojas, landing pages e plataformas B2B
+        construídas do zero, com código próprio e performance medida depois da entrega.
+      </p>
+    </div>
+
+    <!-- Barra de filtros: alterna a visibilidade dos cards por `tipo`. -->
+    {
+      mostrarFiltros && (
+        <div
+          class="mt-12 flex flex-wrap justify-center gap-2.5 sm:mt-14 sm:gap-3"
+          role="group"
+          aria-label="Filtrar projetos por tipo"
+          data-filtros
+        >
+          {filtros.map((filtro) => (
+            <button
+              type="button"
+              data-filtro={filtro.valor}
+              aria-pressed={filtro.valor === 'todos' ? 'true' : 'false'}
+              class={classesPilula(filtro.valor === 'todos')}
+            >
+              {filtro.label}
+            </button>
+          ))}
+        </div>
+      )
+    }
+
+    <!-- Grade: 1 coluna no mobile, 2 no desktop. O tom alterna creme/branco. -->
+    {
+      projetos.length > 0 ? (
+        <div class="mt-10 grid grid-cols-1 gap-6 sm:mt-12 sm:gap-8 lg:grid-cols-2" data-grade>
+          {projetos.map((projeto, i) => (
+            <div data-projeto data-tipo={projeto.data.tipo}>
+              <ProjectCard projeto={projeto} tom={i % 2 === 0 ? 'creme' : 'branco'} />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p class="mt-12 text-center text-base text-white">
+          Nenhum projeto publicado por aqui ainda. Volte em breve.
+        </p>
+      )
+    }
+
+    <!-- Aviso exibido pelo script quando um filtro não tem projeto. role=status
+         faz o leitor de tela anunciar a troca, que é puramente visual. -->
+    <p class="mt-10 text-center text-base text-white" role="status" data-vazio hidden>
+      Nenhum projeto nesta categoria por enquanto.
+    </p>
+
+    <div class="mt-14 flex justify-center sm:mt-16">
+      <a
+        href="/projetos"
+        class="bg-butter-200 text-ink-900 hover:bg-butter-100 focus-visible:ring-butter-200 focus-visible:ring-offset-peri-500 inline-flex min-h-11 items-center gap-2 rounded-full px-7 py-3 text-sm font-semibold transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-hidden sm:text-base"
+      >
+        Ver todos os projetos
+        <Icon name="arrow" class="size-4" />
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Rede de segurança: garante que o atributo `hidden` vença o display dos
+     wrappers da grade mesmo se o preflight do Tailwind mudar. */
+  [data-projeto][hidden],
+  [data-vazio][hidden] {
+    display: none;
+  }
+</style>
+
+<script define:vars={{ PILULA_BASE, PILULA_ATIVA, PILULA_INATIVA }}>
+  (function iniciarFiltroProjetos() {
+    function aplicar(raiz) {
+      if (!raiz) return;
+
+      const barra = raiz.querySelector('[data-filtros]');
+      const botoes = barra ? Array.from(barra.querySelectorAll('[data-filtro]')) : [];
+      const cards = Array.from(raiz.querySelectorAll('[data-projeto]'));
+      const vazio = raiz.querySelector('[data-vazio]');
+
+      if (botoes.length === 0 || cards.length === 0) return;
+
+      function selecionar(valor) {
+        botoes.forEach((botao) => {
+          const ativo = botao.getAttribute('data-filtro') === valor;
+          botao.setAttribute('aria-pressed', ativo ? 'true' : 'false');
+          botao.className = [PILULA_BASE, ativo ? PILULA_ATIVA : PILULA_INATIVA].join(' ');
+        });
+
+        let visiveis = 0;
+
+        cards.forEach((card) => {
+          const casa = valor === 'todos' || card.getAttribute('data-tipo') === valor;
+          if (casa) {
+            card.removeAttribute('hidden');
+            visiveis += 1;
+          } else {
+            card.setAttribute('hidden', '');
+          }
+        });
+
+        if (vazio) {
+          if (visiveis === 0) {
+            vazio.removeAttribute('hidden');
+          } else {
+            vazio.setAttribute('hidden', '');
+          }
+        }
+      }
+
+      botoes.forEach((botao) => {
+        botao.addEventListener('click', () => {
+          selecionar(botao.getAttribute('data-filtro') || 'todos');
+        });
+      });
+    }
+
+    function iniciar() {
+      aplicar(document.getElementById('projetos'));
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', iniciar, { once: true });
+    } else {
+      iniciar();
+    }
+  })();
+</script>

@@ -1,0 +1,115 @@
+---
+import Icon from '../Icon.astro';
+import { SITE, NUMEROS } from '../../consts';
+
+// Domínio exibido na pílula do mockup — sai de SITE.url para não duplicar dado.
+const dominio = SITE.url.replace(/^https?:\/\//, '').replace(/\/$/, '');
+
+// Segundo número da lista, usado como assinatura discreta no topo.
+const [, entregas] = NUMEROS;
+---
+
+<!-- HERO — faixa creme full width: palavra gigante contida e mockup sobreposto no desktop. -->
+<section id="inicio" class="bg-butter-200 relative w-full overflow-hidden py-16 sm:py-24 lg:py-28">
+  <div class="mx-auto max-w-7xl px-6 sm:px-10">
+    <!-- Linha de topo: assinatura do estúdio à esquerda, número de entregas à direita. -->
+    <div
+      class="border-ink-900/15 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-b pb-5"
+    >
+      <p class="text-peri-700 text-[0.7rem] font-semibold tracking-[0.32em] uppercase sm:text-xs">
+        {SITE.company} — {SITE.tagline}
+      </p>
+      <p class="text-ink-700 text-[0.7rem] font-medium tracking-[0.18em] uppercase sm:text-xs">
+        <span class="text-peri-700 font-semibold">{entregas.valor}</span>
+        {entregas.label}
+      </p>
+    </div>
+
+    <!-- Bloco tipográfico: a palavra gigante manda na composição e o mockup
+         encosta nas últimas letras só no desktop. -->
+    <div class="relative mt-10 sm:mt-14 lg:pb-24">
+      <h1 class="relative z-0 max-w-full">
+        <span
+          class="text-ink-700 block text-[0.7rem] font-semibold tracking-[0.42em] uppercase sm:text-sm"
+        >
+          Estúdio de
+        </span>
+        <span class="display palavra text-peri-500 mt-3 block sm:mt-4">E-commerce</span>
+      </h1>
+
+      <!-- Mockup de navegador (decorativo): empilha no mobile, sobrepõe o fim
+           da palavra no desktop. Sem imagem externa — só SVG e cor de fundo. -->
+      <div
+        class="relative z-10 mx-auto mt-10 w-full max-w-[18rem] sm:max-w-sm lg:absolute lg:top-1/2 lg:right-0 lg:mx-0 lg:mt-0 lg:w-[18rem] lg:max-w-none lg:-translate-y-1/2 lg:rotate-2 xl:w-[21rem]"
+        aria-hidden="true"
+      >
+        <div class="bg-butter-200 rounded-2xl p-2 sm:p-2.5">
+          <div class="border-ink-900/15 overflow-hidden rounded-xl border bg-white">
+            <div class="border-ink-900/10 bg-butter-50 flex items-center gap-1.5 border-b px-3 py-2.5">
+              <span class="size-2.5 shrink-0 rounded-full bg-rose-400"></span>
+              <span class="size-2.5 shrink-0 rounded-full bg-amber-400"></span>
+              <span class="size-2.5 shrink-0 rounded-full bg-emerald-400"></span>
+              <span
+                class="border-ink-900/10 text-ink-500 ml-2 min-w-0 flex-1 truncate rounded-full border bg-white px-3 py-1 text-center text-[0.7rem] font-medium"
+              >
+                {dominio}
+              </span>
+            </div>
+
+            <div class="bg-peri-500 relative aspect-[4/3]">
+              <div
+                class="absolute inset-0 bg-[radial-gradient(circle_at_50%_44%,rgba(255,255,255,0.18),transparent_64%)]"
+              >
+              </div>
+              <svg viewBox="0 0 320 240" fill="none" class="absolute inset-0 size-full">
+                <circle cx="160" cy="120" r="92" class="stroke-butter-200/45" stroke-width="2" />
+                <circle cx="160" cy="120" r="54" class="stroke-butter-200/80" stroke-width="2" />
+                <circle cx="160" cy="120" r="13" class="fill-peri-700" />
+                <circle cx="160" cy="28" r="9" class="fill-butter-200" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rodapé do hero: posicionamento à esquerda, ações à direita. -->
+    <div
+      class="border-ink-900/15 mt-12 grid gap-8 border-t pt-8 sm:mt-16 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:gap-12"
+    >
+      <p class="text-ink-900 max-w-xl text-lg leading-snug font-medium text-pretty sm:text-xl">
+        Construímos lojas Shopify rápidas que vendem.
+        <span class="text-ink-700 block">Da estrutura do tema à última métrica de performance.</span>
+      </p>
+
+      <div class="flex flex-wrap items-center gap-3 lg:justify-end">
+        <a
+          href="#projetos"
+          class="bg-peri-500 hover:bg-peri-600 focus-visible:outline-peri-700 inline-flex min-h-12 items-center gap-2 rounded-xl px-6 py-3.5 text-sm font-semibold text-white transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 sm:text-base"
+        >
+          Ver projetos
+          <Icon name="arrow" class="size-5" />
+        </a>
+        <a
+          href={`mailto:${SITE.email}`}
+          class="border-ink-900/25 text-ink-900 hover:border-ink-900/45 hover:bg-butter-100 focus-visible:outline-peri-700 inline-flex min-h-12 items-center gap-2 rounded-xl border px-6 py-3.5 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 sm:text-base"
+          aria-label={`Falar com a gente por e-mail: ${SITE.email}`}
+        >
+          <Icon name="mail" class="size-5" />
+          Falar com a gente
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* A palavra acompanha a viewport em vez de degraus fixos, então ocupa quase
+     toda a largura em qualquer tela. O teto (9rem) trava o crescimento antes
+     de o container bater no max-w-7xl e `nowrap` impede a quebra no hífen de
+     "E-COMMERCE" — a <section> tem overflow-hidden como rede de segurança. */
+  .palavra {
+    font-size: clamp(2.125rem, 11.2vw, 9rem);
+    white-space: nowrap;
+  }
+</style>
