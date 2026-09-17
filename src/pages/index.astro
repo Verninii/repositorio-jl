@@ -13,13 +13,13 @@ const destaques = projetos.slice(0, 4);
 ---
 
 <Layout description={SITE.description}>
-  <div class="mx-auto max-w-6xl space-y-4 pt-4 pb-4">
+  <div class="mx-auto max-w-6xl space-y-4 px-4 pt-4 pb-4">
     <!-- HERO -->
     <section
       class="bg-butter-200 relative overflow-hidden rounded-3xl px-6 py-14 sm:px-12 sm:py-20"
     >
-      <div class="grid gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-        <div>
+      <div class="grid gap-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-center">
+        <div class="min-w-0">
           <p
             class="border-ink-900/20 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold tracking-widest uppercase"
           >
@@ -61,7 +61,7 @@ const destaques = projetos.slice(0, 4);
 
         <!-- Preview de marca no lugar de uma foto do time. Troque por um
              screenshot real ou foto quando tiver um pronto. -->
-        <div class="relative mx-auto w-full max-w-sm lg:mx-0 lg:max-w-none">
+        <div class="relative mx-auto w-full max-w-sm min-w-0 lg:mx-0 lg:max-w-none">
           <div
             class="border-ink-900/15 overflow-hidden rounded-3xl border bg-white shadow-xl shadow-black/5"
           >
@@ -79,7 +79,12 @@ const destaques = projetos.slice(0, 4);
                 ></circle>
                 <circle cx="100" cy="100" r="52" fill="none" stroke="currentColor" stroke-width="2"
                 ></circle>
-                <circle cx="168" cy="62" r="11" fill="currentColor" class="text-butter-200"></circle>
+                <!-- O ponto gira preso ao anel externo (r=78): o <g> roda em
+                     torno do centro e o círculo mantém sua posição relativa
+                     a ele, como uma órbita de verdade. -->
+                <g class="orbita-ponto">
+                  <circle cx="168" cy="62" r="11" fill="currentColor" class="text-butter-200"></circle>
+                </g>
               </svg>
             </div>
           </div>
@@ -119,7 +124,7 @@ const destaques = projetos.slice(0, 4);
     <section
       class="bg-peri-500 overflow-hidden rounded-3xl px-6 py-14 text-white sm:px-12 sm:py-20"
     >
-      <div class="grid gap-12 lg:grid-cols-[0.9fr_1.1fr]">
+      <div class="grid gap-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
         <div>
           <p class="text-butter-200 text-xs font-semibold tracking-widest uppercase">
             No que trabalhamos
@@ -262,3 +267,20 @@ const destaques = projetos.slice(0, 4);
     </section>
   </div>
 </Layout>
+
+<style>
+  /* Roda em torno do centro do viewBox (200x200 → 100,100). transform-box:
+     view-box ancora a origem no sistema de coordenadas do SVG, não na
+     bounding box do próprio <g> — sem isso a órbita fica descentralizada. */
+  .orbita-ponto {
+    transform-box: view-box;
+    transform-origin: 100px 100px;
+    animation: orbitar 10s linear infinite;
+  }
+
+  @keyframes orbitar {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+</style>

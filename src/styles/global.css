@@ -22,6 +22,20 @@
   --color-peri-700: #394a84;
   --color-peri-900: #2c3963;
 
+  /* Passos grandes da escala, fluidos. Só o display usa 4xl+ e, em tamanho
+     fixo, "RESULTADOS" (48px) e "CARREGAM" (60px) ficavam mais largos que a
+     tela no mobile: a palavra não quebra, então empurrava a coluna inteira
+     para fora da margem. Cada piso é o maior tamanho que ainda cabe na
+     largura útil de uma tela de 320px, e cada clamp reencosta no valor
+     original já em 480px — de `sm` para cima nada muda de tamanho. */
+  --text-4xl: clamp(1.875rem, 7.5vw, 2.25rem);
+  --text-5xl: clamp(2.0625rem, 10vw, 3rem);
+  --text-6xl: clamp(2.5rem, 12.5vw, 3.75rem);
+  --text-7xl: clamp(3rem, 15vw, 4.5rem);
+  /* Teto de 5.5rem e não 6rem: a 96px "CARREGAM" ocupava os ~554px da coluna
+     do hero por inteiro, sem folga para a margem lateral da página. */
+  --text-8xl: clamp(3.5rem, 18.33vw, 5.5rem);
+
   /* Texto. */
   --color-ink-900: #16161a;
   --color-ink-700: #3a3a42;
@@ -41,6 +55,14 @@ html {
   /* 1.12 e não menos: acentos do português (Á, Ó, Ê) colidem com a linha
      anterior em valores mais apertados. */
   line-height: 1.12;
+  /* Rede de segurança: título com palavra longa demais para a linha quebra
+     dentro da caixa em vez de furar a margem (ex.: o overlay do ProjectCard
+     em telas de 320px). Precisa ser `anywhere`, que também encolhe o
+     min-content do texto — do contrário a caixa de largura fixa continua
+     sendo furada. As colunas fr arbitrárias que usam .display (hero,
+     Frentes) já têm minmax(0, …) para não herdar esse min-content menor
+     como piso da trilha do grid. */
+  overflow-wrap: anywhere;
 }
 
 /* Faixa full-width: a cor vai de ponta a ponta, o conteúdo fica contido. */
