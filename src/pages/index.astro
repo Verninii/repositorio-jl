@@ -156,26 +156,49 @@ const destaques = projetos.slice(0, 4);
       </div>
     </section>
 
-    <!-- PROCESSO -->
-    <section class="bg-butter-200 rounded-3xl px-6 py-14 sm:px-12 sm:py-20">
-      <p class="text-ink-500 text-xs font-semibold tracking-widest uppercase">Como trabalhamos</p>
-      <h2 class="display mt-4 max-w-2xl text-5xl sm:text-6xl">Nosso processo</h2>
+  </div>
 
-      <ol class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+  <!-- PROCESSO — faixa azul de ponta a ponta (fora do contêiner max-w-6xl),
+       com etapas bege e número em círculo azul-claro. O padding interno
+       (px-10 / sm:px-16) soma o gutter do contêiner com o dos cards, então o
+       conteúdo alinha com as seções vizinhas. Nos telões, uma linha liga os
+       círculos e reforça a ideia de sequência. -->
+  <section id="processo" class="bg-azul w-full scroll-mt-24 py-24 sm:py-32 lg:py-40">
+    <div class="mx-auto max-w-6xl px-10 sm:px-16">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <div>
+          <p class="rotulo text-azul-claro">(04) — Como trabalhamos</p>
+          <h2 class="display-serif text-bege mt-5 text-5xl leading-[1.05] sm:text-7xl sm:leading-[1.05]">
+            Nosso <em>processo</em>
+          </h2>
+        </div>
+        <p class="text-azul-claro max-w-sm text-[0.9375rem] leading-relaxed">
+          Quatro etapas, sempre nessa ordem — você sabe em que ponto o projeto está do primeiro
+          ao último dia.
+        </p>
+      </div>
+
+      <ol class="relative mt-16 grid gap-4 sm:mt-20 sm:grid-cols-2 lg:mt-24 lg:grid-cols-4">
+        <span
+          class="bg-azul-claro/30 absolute top-[3.25rem] right-[12.5%] left-[12.5%] hidden h-px lg:block"
+          aria-hidden="true"
+        ></span>
         {
           PROCESSO.map((etapa, i) => (
-            <li class="border-ink-900/10 flex flex-col rounded-2xl border bg-white px-6 py-7">
-              <span class="bg-peri-500 display grid size-11 place-items-center rounded-full text-lg text-white">
+            <li class="bg-bege text-azul relative flex flex-col rounded-3xl p-7 sm:p-8 lg:min-h-80">
+              <span class="bg-azul-claro grid size-12 place-items-center rounded-full text-sm font-semibold tabular-nums">
                 {String(i + 1).padStart(2, '0')}
               </span>
-              <h3 class="mt-5 text-lg font-semibold">{etapa.titulo}</h3>
-              <p class="text-ink-700 mt-2 text-sm leading-relaxed">{etapa.texto}</p>
+              <h3 class="display-serif mt-8 text-[1.75rem] leading-[1.15]">{etapa.titulo}</h3>
+              <p class="text-azul/75 mt-3 text-[0.9375rem] leading-relaxed">{etapa.texto}</p>
             </li>
           ))
         }
       </ol>
-    </section>
+    </div>
+  </section>
 
+  <div class="mx-auto max-w-6xl space-y-4 px-4 pt-4 pb-4">
     <!-- PROJETOS -->
     <section id="projetos" class="scroll-mt-24 rounded-3xl bg-white px-6 py-14 sm:px-12 sm:py-20">
       <div class="flex flex-wrap items-end justify-between gap-6">

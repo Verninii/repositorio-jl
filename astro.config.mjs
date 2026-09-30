@@ -30,6 +30,15 @@ export default defineConfig({
       weights: [400],
       subsets: ['latin'],
     },
+    {
+      // Serifada do rodapé e da seção "Nosso processo" (classe .display-serif).
+      provider: fontProviders.google(),
+      name: 'Playfair Display',
+      cssVariable: '--font-playfair',
+      weights: ['400 800'],
+      styles: ['normal', 'italic'],
+      subsets: ['latin'],
+    },
   ],
 
   vite: {

@@ -2,7 +2,8 @@
 import '../styles/global.css';
 import { Font } from 'astro:assets';
 import SEO from '../components/SEO.astro';
-import { SITE } from '../consts';
+import Icon from '../components/Icon.astro';
+import { SITE, SERVICOS } from '../consts';
 
 type SEOProps = Parameters<typeof SEO>[0];
 
@@ -24,6 +25,7 @@ const isActive = (href: string) => href.startsWith('/') && !href.includes('#') &
     <SEO {...props} />
     <Font cssVariable="--font-inter" preload />
     <Font cssVariable="--font-archivo" preload />
+    <Font cssVariable="--font-playfair" />
   </head>
   <body class="bg-butter-200 text-ink-900 font-sans min-h-dvh antialiased">
     <a
@@ -90,36 +92,89 @@ const isActive = (href: string) => href.startsWith('/') && !href.includes('#') &
       <slot />
     </main>
 
-    <footer class="bg-peri-900 w-full">
-      <div class="text-peri-300 mx-auto max-w-7xl px-6 py-14 sm:px-10">
-        <div class="flex flex-col gap-8 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p class="display text-butter-200 text-4xl sm:text-5xl">{SITE.company}</p>
-            <p class="mt-3 max-w-sm text-sm leading-relaxed">{SITE.tagline}</p>
+    <!-- Rodapé em colunas: marca + chamada à esquerda, mapa do site à direita. -->
+    <footer class="bg-ceu-900 w-full">
+      <div class="text-ceu-300 mx-auto max-w-7xl px-6 pt-16 pb-8 sm:px-10 sm:pt-20">
+        <div class="grid gap-12 lg:grid-cols-12 lg:gap-10">
+          <div class="lg:col-span-5">
+            <p class="display-serif text-sol-200 text-5xl leading-none sm:text-6xl">{SITE.company}</p>
+            <p class="mt-5 max-w-sm text-sm leading-relaxed">
+              {SITE.tagline}. Lojas Shopify rápidas, integrações e SEO técnico para marcas
+              brasileiras.
+            </p>
+            <a
+              href={`mailto:${SITE.email}`}
+              class="bg-sol-300 text-ink-900 hover:bg-sol-200 mt-8 inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold transition-colors"
+            >
+              Fale conosco
+              <Icon name="arrow" class="size-4" />
+            </a>
           </div>
 
-          <div class="flex flex-wrap gap-x-8 gap-y-2 text-sm">
-            <a href={`mailto:${SITE.email}`} class="transition-colors hover:text-white">
-              {SITE.email}
-            </a>
-            {
-              SITE.links.map((link) => (
-                <a
-                  href={link.href}
-                  rel="noopener noreferrer me"
-                  target="_blank"
-                  class="transition-colors hover:text-white"
-                >
-                  {link.label}
-                </a>
-              ))
-            }
-          </div>
+          <nav aria-label="Rodapé" class="grid grid-cols-2 gap-10 sm:grid-cols-3 lg:col-span-7">
+            <div>
+              <p class="rotulo text-sol-200">Navegação</p>
+              <ul class="mt-5 space-y-3 text-sm">
+                {
+                  [{ href: '/', label: 'Início' }, ...nav].map((item) => (
+                    <li>
+                      <a href={item.href} class="transition-colors hover:text-white">
+                        {item.label}
+                      </a>
+                    </li>
+                  ))
+                }
+              </ul>
+            </div>
+
+            <div>
+              <p class="rotulo text-sol-200">Serviços</p>
+              <ul class="mt-5 space-y-3 text-sm">
+                {
+                  SERVICOS.map((servico) => (
+                    <li>
+                      <a href="/#servicos" class="transition-colors hover:text-white">
+                        {servico.titulo}
+                      </a>
+                    </li>
+                  ))
+                }
+              </ul>
+            </div>
+
+            <div class="col-span-2 sm:col-span-1">
+              <p class="rotulo text-sol-200">Contato</p>
+              <ul class="mt-5 space-y-3 text-sm">
+                <li>
+                  <a href={`mailto:${SITE.email}`} class="transition-colors hover:text-white">
+                    {SITE.email}
+                  </a>
+                </li>
+                {
+                  SITE.links.map((link) => (
+                    <li>
+                      <a
+                        href={link.href}
+                        rel="noopener noreferrer me"
+                        target="_blank"
+                        class="transition-colors hover:text-white"
+                      >
+                        {link.label}
+                      </a>
+                    </li>
+                  ))
+                }
+              </ul>
+            </div>
+          </nav>
         </div>
 
-        <p class="border-peri-700 mt-12 border-t pt-6 text-xs">
-          &copy; {new Date().getFullYear()} {SITE.company}. Todos os direitos reservados.
-        </p>
+        <div
+          class="border-ceu-700 mt-16 flex flex-wrap items-center justify-between gap-4 border-t pt-6 text-xs"
+        >
+          <p>&copy; {new Date().getFullYear()} {SITE.company}. Todos os direitos reservados.</p>
+          <a href="#" class="transition-colors hover:text-white">Voltar ao topo ↑</a>
+        </div>
       </div>
     </footer>
   </body>

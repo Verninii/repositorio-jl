@@ -40,6 +40,20 @@
   --color-ink-900: #16161a;
   --color-ink-700: #3a3a42;
   --color-ink-500: #676771;
+
+  /* Paleta do rodapé e da seção "Nosso processo": azul-escuro, bege amarelado
+     e azul-claro. Contrastes (WCAG): bege sobre azul 12:1; azul-claro sobre
+     azul 7,7:1; azul a 75% sobre bege 5,8:1. */
+  --font-serif: var(--font-playfair), ui-serif, Georgia, serif;
+  --color-sol-100: #fff7d6;
+  --color-sol-200: #fff2b2;
+  --color-sol-300: #ffe08a;
+  --color-ceu-300: #a8c6e7;
+  --color-ceu-700: #2e4a6e;
+  --color-ceu-900: #1c2e47;
+  --color-azul: var(--color-ceu-900);
+  --color-bege: var(--color-sol-200);
+  --color-azul-claro: var(--color-ceu-300);
 }
 
 html {
@@ -63,6 +77,35 @@ html {
      Frentes) já têm minmax(0, …) para não herdar esse min-content menor
      como piso da trilha do grid. */
   overflow-wrap: anywhere;
+}
+
+/* Em @layer components para que utilitários (leading-*, tracking-*) aplicados
+   junto consigam sobrescrever estes padrões. */
+@layer components {
+  /* Títulos serifados do rodapé e do "Nosso processo": Playfair Display 500,
+     caixa normal. Itálico (<em>) destaca a palavra-chave. */
+  .display-serif {
+    font-family: var(--font-serif);
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    /* A Playfair usa algarismos de estilo antigo por padrão; alinhados ficam
+       corretos em números e siglas. */
+    font-variant-numeric: lining-nums;
+    overflow-wrap: anywhere;
+  }
+  .display-serif em {
+    font-style: italic;
+    font-weight: 500;
+  }
+
+  /* Rótulo de seção no estilo portfólio: "(04) — Como trabalhamos". */
+  .rotulo {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
 }
 
 /* Faixa full-width: a cor vai de ponta a ponta, o conteúdo fica contido. */
