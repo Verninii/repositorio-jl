@@ -3,7 +3,8 @@ import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import Icon from '../components/Icon.astro';
-import { SITE, NUMEROS, SERVICOS, PROCESSO, DEPOIMENTOS, STACK } from '../consts';
+import Hero from '../components/sections/Hero.astro';
+import { SITE, SERVICOS, PROCESSO, DEPOIMENTOS, STACK } from '../consts';
 
 const projetos = (await getCollection('projetos', ({ data }) => !data.draft)).sort(
   (a, b) => a.data.ordem - b.data.ordem || b.data.ano - a.data.ano,
@@ -12,114 +13,10 @@ const projetos = (await getCollection('projetos', ({ data }) => !data.draft)).so
 const destaques = projetos.slice(0, 4);
 ---
 
-<Layout description={SITE.description}>
+<Layout description={SITE.description} headerSobreposto>
+  <Hero />
+
   <div class="mx-auto max-w-6xl space-y-4 px-4 pt-4 pb-4">
-    <!-- HERO -->
-    <section
-      class="bg-butter-200 relative overflow-hidden rounded-3xl px-6 py-14 sm:px-12 sm:py-20"
-    >
-      <div class="grid gap-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:items-center">
-        <div class="min-w-0">
-          <p
-            class="border-ink-900/20 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold tracking-widest uppercase"
-          >
-            <span class="relative flex size-2">
-              <span
-                class="bg-peri-600 absolute inline-flex h-full w-full animate-ping rounded-full opacity-60"
-              ></span>
-              <span class="bg-peri-600 relative inline-flex size-2 rounded-full"></span>
-            </span>
-            {SITE.tagline}
-          </p>
-
-          <h1 class="display mt-6 text-6xl sm:text-7xl lg:text-8xl">
-            Lojas que<br /><span class="text-peri-600">carregam rápido</span><br />e vendem
-          </h1>
-
-          <p class="text-ink-700 mt-6 max-w-lg text-lg leading-relaxed">
-            Somos a {SITE.company}, um time de desenvolvedores que constrói e-commerce de ponta
-            a ponta — da estrutura do tema Shopify à última métrica de performance.
-          </p>
-
-          <div class="mt-8 flex flex-wrap items-center gap-3">
-            <a
-              href="#projetos"
-              class="bg-ink-900 hover:bg-peri-600 inline-flex items-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold text-white transition-colors"
-            >
-              Ver nossos projetos
-              <Icon name="arrow" class="size-4" />
-            </a>
-            <a
-              href={`mailto:${SITE.email}`}
-              class="border-ink-900/25 hover:bg-ink-900/5 inline-flex items-center gap-2 rounded-full border px-6 py-3.5 text-sm font-semibold transition-colors"
-            >
-              <Icon name="mail" class="size-4" />
-              Conversar sobre um projeto
-            </a>
-          </div>
-        </div>
-
-        <!-- Preview de marca no lugar de uma foto do time. Troque por um
-             screenshot real ou foto quando tiver um pronto. -->
-        <div class="relative mx-auto w-full max-w-sm min-w-0 lg:mx-0 lg:max-w-none">
-          <div
-            class="border-ink-900/15 overflow-hidden rounded-3xl border bg-white shadow-xl shadow-black/5"
-          >
-            <div class="border-ink-900/10 flex items-center gap-1.5 border-b px-4 py-3">
-              <span class="size-2.5 rounded-full bg-rose-400"></span>
-              <span class="size-2.5 rounded-full bg-amber-400"></span>
-              <span class="size-2.5 rounded-full bg-emerald-400"></span>
-              <span class="text-ink-500 bg-butter-100 mx-auto rounded-full px-3 py-1 text-xs">
-                {new URL(SITE.url).host}
-              </span>
-            </div>
-            <div class="bg-peri-500 relative grid aspect-[4/5] place-items-center overflow-hidden">
-              <svg viewBox="0 0 200 200" class="h-44 w-44 text-white/20" aria-hidden="true">
-                <circle cx="100" cy="100" r="78" fill="none" stroke="currentColor" stroke-width="2"
-                ></circle>
-                <circle cx="100" cy="100" r="52" fill="none" stroke="currentColor" stroke-width="2"
-                ></circle>
-                <!-- O ponto gira preso ao anel externo (r=78): o <g> roda em
-                     torno do centro e o círculo mantém sua posição relativa
-                     a ele, como uma órbita de verdade. -->
-                <g class="orbita-ponto">
-                  <circle cx="168" cy="62" r="11" fill="currentColor" class="text-butter-200"></circle>
-                </g>
-              </svg>
-            </div>
-          </div>
-
-          <div
-            class="border-ink-900/15 absolute -bottom-4 -left-4 flex items-center gap-3 rounded-2xl border bg-white px-4 py-3 shadow-lg"
-          >
-            <span class="bg-peri-500 grid size-9 shrink-0 place-items-center rounded-full text-white">
-              <Icon name="bolt" class="size-4" />
-            </span>
-            <div>
-              <p class="text-sm leading-none font-semibold">LCP médio &lt; 1,5s</p>
-              <p class="text-ink-500 mt-1 text-xs">medido nas entregas</p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <dl class="border-ink-900/15 mt-16 grid grid-cols-2 gap-8 border-t pt-8 sm:grid-cols-4">
-        {
-          NUMEROS.map((n) => (
-            <div>
-              <dt class="sr-only">{n.label}</dt>
-              <dd>
-                <span class="display text-peri-600 block text-4xl sm:text-5xl">{n.valor}</span>
-                <span class="text-ink-700 mt-1.5 block text-xs font-medium tracking-wide uppercase">
-                  {n.label}
-                </span>
-              </dd>
-            </div>
-          ))
-        }
-      </dl>
-    </section>
-
     <!-- SERVIÇOS -->
     <section
       class="bg-peri-500 overflow-hidden rounded-3xl px-6 py-14 text-white sm:px-12 sm:py-20"

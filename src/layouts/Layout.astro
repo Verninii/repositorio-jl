@@ -7,7 +7,11 @@ import { SITE, SERVICOS } from '../consts';
 
 type SEOProps = Parameters<typeof SEO>[0];
 
-const props = Astro.props as SEOProps;
+type Props = SEOProps & {
+  headerSobreposto?: boolean;
+};
+
+const { headerSobreposto = false, ...props } = Astro.props as Props;
 const path = Astro.url.pathname;
 
 const nav = [
@@ -35,9 +39,9 @@ const isActive = (href: string) => href.startsWith('/') && !href.includes('#') &
       Pular para o conteúdo
     </a>
 
-    <header class="bg-butter-200 sticky top-0 z-40 w-full">
+    <header class="pointer-events-none fixed inset-x-0 top-0 z-40 px-3 pt-3 sm:px-6 sm:pt-5">
       <div
-        class="border-ink-900/10 mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 border-b px-6 sm:h-20 sm:px-10"
+        class="bg-butter-50/85 supports-[backdrop-filter]:bg-butter-50/65 shadow-ink-900/10 pointer-events-auto mx-auto flex h-14 max-w-7xl items-center justify-between gap-4 rounded-full border border-white/60 pr-2 pl-5 shadow-lg backdrop-blur-xl backdrop-saturate-150 sm:h-16 sm:pl-7"
       >
         <a href="/" class="group flex shrink-0 items-center gap-2.5">
           <!-- Logomark: anel + ponto, referência ao nome "Órbita". -->
@@ -81,14 +85,14 @@ const isActive = (href: string) => href.startsWith('/') && !href.includes('#') &
 
         <a
           href={`mailto:${SITE.email}`}
-          class="bg-peri-500 hover:bg-peri-600 shrink-0 rounded-full px-4 py-2.5 text-xs font-semibold tracking-widest whitespace-nowrap text-white uppercase transition-colors sm:px-5"
+          class="bg-peri-500 hover:bg-peri-600 inline-flex h-10 shrink-0 items-center rounded-full px-4 text-xs font-semibold tracking-widest whitespace-nowrap text-white uppercase transition-colors sm:h-12 sm:px-6"
         >
           Contato
         </a>
       </div>
     </header>
 
-    <main id="conteudo">
+    <main id="conteudo" class:list={[!headerSobreposto && 'pt-20 sm:pt-24']}>
       <slot />
     </main>
 
