@@ -54,6 +54,16 @@
   --color-azul: var(--color-ceu-900);
   --color-bege: var(--color-sol-200);
   --color-azul-claro: var(--color-ceu-300);
+
+  /* Paleta dos depoimentos (árvore em flor). O glicinia-900 não vem da
+     referência: é um azul bem escuro só p/ o texto sobre o azul-claro. */
+  --color-glicinia-900: #0f2b57;
+  --color-glicinia-700: #2961b1;
+  --color-glicinia-500: #64a8e5;
+  --color-glicinia-200: #bed7f4;
+  --color-lima-400: #c7d42b;
+  --color-areia-300: #d3c399;
+  --color-tronco-600: #7a6142;
 }
 
 html {

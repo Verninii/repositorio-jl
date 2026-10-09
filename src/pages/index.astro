@@ -4,7 +4,8 @@ import Layout from '../layouts/Layout.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import Icon from '../components/Icon.astro';
 import Hero from '../components/sections/Hero.astro';
-import { SITE, SERVICOS, PROCESSO, DEPOIMENTOS, STACK } from '../consts';
+import Depoimentos from '../components/sections/Depoimentos.astro';
+import { SITE, SERVICOS, PROCESSO, STACK } from '../consts';
 
 const projetos = (await getCollection('projetos', ({ data }) => !data.draft)).sort(
   (a, b) => a.data.ordem - b.data.ordem || b.data.ano - a.data.ano,
@@ -131,29 +132,11 @@ const destaques = projetos.slice(0, 4);
       }
     </section>
 
-    <!-- DEPOIMENTOS -->
-    <section class="bg-butter-200 rounded-3xl px-6 py-14 sm:px-12 sm:py-20">
-      <p class="text-ink-500 text-xs font-semibold tracking-widest uppercase">Depoimentos</p>
-      <h2 class="display mt-4 max-w-2xl text-5xl sm:text-6xl">O que dizem sobre nós</h2>
+  </div>
 
-      <div class="mt-12 grid gap-5 sm:grid-cols-2">
-        {
-          DEPOIMENTOS.map((d) => (
-            <figure class="border-ink-900/10 flex flex-col rounded-2xl border bg-white px-7 py-8">
-              <span class="display text-peri-400 text-5xl leading-none" aria-hidden="true">
-                &ldquo;
-              </span>
-              <blockquote class="text-ink-900 mt-2 leading-relaxed">{d.texto}</blockquote>
-              <figcaption class="text-ink-500 mt-6 text-sm">
-                <span class="text-ink-900 block font-semibold">{d.autor}</span>
-                {d.cargo}
-              </figcaption>
-            </figure>
-          ))
-        }
-      </div>
-    </section>
+  <Depoimentos />
 
+  <div class="mx-auto max-w-6xl space-y-4 px-4 pt-4 pb-4">
     <!-- STACK -->
     <section class="rounded-3xl bg-white px-6 py-14 sm:px-12 sm:py-16">
       <p class="text-ink-500 text-xs font-semibold tracking-widest uppercase">Stack</p>

@@ -3,6 +3,8 @@
 // TODO: troque também SITE.url, SITE.email e SITE.links pelos dados reais
 // antes do primeiro deploy — canonical, Open Graph, sitemap e contato
 // dependem deles.
+import type { ImageMetadata } from 'astro';
+
 export const SITE = {
   url: 'https://orbita.dev',
   company: 'Órbita',
@@ -82,21 +84,44 @@ export const PROCESSO = [
   },
 ] as const;
 
-/** Depoimentos de clientes. TODO: troque por depoimentos reais. */
-export const DEPOIMENTOS = [
+export type Depoimento = {
+  /** Frase curta de destaque, aparece em negrito acima do texto */
+  titulo?: string;
+  texto: string;
+  autor: string;
+  cargo?: string;
+  /** Nota de 1 a 5 (padrão 5) */
+  nota?: number;
+  /** Foto de src/assets. Sem foto, mostra as iniciais */
+  foto?: ImageMetadata;
+};
+/** Depoimentos de clientes.
+ * TODO: confirmar c/ cada cliente (texto e nome) antes de publicar. */
+export const DEPOIMENTOS: readonly Depoimento[] = [
   {
+    titulo: 'Parceria de alto nível.',
     texto:
-      'A loja saiu do ar de madrugada e o time respondeu em minutos. É raro encontrar esse nível de compromisso em fornecedor de tecnologia.',
-    autor: 'Depoimento de exemplo',
-    cargo: 'Substitua por um cliente real',
+      'Excelente competência técnica na reformulação do nosso sistema. Comunicação clara, pontualidade rigorosa e uma plataforma segura e rápida para a equipe. Time extremamente confiável.',
+    autor: 'Dr. Eduardo Vasconcelos',
   },
   {
-    texto:
-      'Entregaram o tema no prazo e ainda documentaram tudo. Nossa equipe interna conseguiu assumir a manutenção sem depender de ninguém.',
-    autor: 'Depoimento de exemplo',
-    cargo: 'Substitua por um cliente real',
+    titulo: 'Simplesmente perfeito!',
+    texto: 'Entregaram minha página antes do prazo, leve e convertendo muito. Recomendo d+!',
+    autor: 'Beatriz Lima',
   },
-] as const;
+  {
+    titulo: 'Sem frescura nem enrolação!',
+    texto:
+      'Papo reto direto pelo whats e desenrolaram meu app voando. Quando precisei ajustar coisa de última hora, resolveram na boa e ainda deram ideias feras pro layout. Trampo fino!',
+    autor: 'Matheus Rocha',
+  },
+  {
+    titulo: 'Sensibilidade absurda, ficou bom d+!',
+    texto:
+      'Nossa plataforma anterior travava direto. Eles reconstruíram tudo com uma pegada super moderna e fácil de mexer, sem passar perrengue. O suporte pós-entrega tb foi 10/10!',
+    autor: 'Camila Duarte',
+  },
+];
 
 /** Tecnologias exibidas na home. */
 export const STACK = [

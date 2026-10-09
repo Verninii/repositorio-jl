@@ -1,0 +1,433 @@
+---
+import { Image } from 'astro:assets';
+import Icon from '../Icon.astro';
+import { DEPOIMENTOS } from '../../consts';
+
+// Título da seção
+const ROTULO = 'O que dizem de nós';
+
+// "Ana Paula Souza" vira "AS" (1ª letra do 1º e do último nome).
+// Pula título tipo "Dr." / "Dra." p/ "Dr. Eduardo Vasconcelos" virar "EV".
+const iniciais = (nome: string) => {
+  const partes = nome.trim().split(/\s+/).filter((parte) => !parte.endsWith('.'));
+  return (partes[0][0] + (partes.length > 1 ? partes.at(-1)![0] : '')).toUpperCase();
+};
+
+const ESTRELA = 'M12 2.5l2.94 6.1 6.56.86-4.8 4.6 1.2 6.54L12 17.4l-5.9 3.2 1.2-6.54-4.8-4.6 6.56-.86z';
+
+const BOTAO =
+  'group border-glicinia-200/40 text-lima-400 hover:border-lima-400 hover:bg-lima-400 hover:text-glicinia-900 focus-visible:outline-lima-400 grid size-11 place-items-center rounded-full border transition-colors focus-visible:outline-2 focus-visible:outline-offset-2';
+---
+
+<!-- DEPOIMENTOS
+     Fundo azul, cards quadrados claros, foto na borda de cima c/ as estrelas
+     em volta. 1 card no celular, 2 no tablet, 3 no desktop.
+     Dá pra arrastar mesmo sem JS; o script só liga o loop, o autoplay, as
+     setas, os pontinhos e a animação de entrada. -->
+<section
+  id="depoimentos"
+  class="bg-glicinia-700 text-glicinia-200 w-full scroll-mt-24 py-16 sm:py-24"
+  aria-labelledby="depoimentos-titulo"
+  aria-roledescription="carrossel"
+  data-carrossel
+>
+  <div class="mx-auto max-w-6xl px-8 sm:px-16">
+  <h2 id="depoimentos-titulo" class="mx-auto max-w-3xl">
+      <span class="sr-only">{ROTULO}</span>
+      {/* Título curvo: o texto segue um arco leve de ponta a ponta.
+          O svg escala c/ a largura, então a curva acompanha qualquer tela. */}
+      <svg viewBox="0 0 800 170" class="text-glicinia-200 block w-full overflow-visible" aria-hidden="true">
+        <path id="depoimentos-titulo-arco" d="M 30 150 A 950 950 0 0 1 770 150" fill="none" />
+        <text
+          class="font-display"
+          fill="currentColor"
+          font-size="64"
+          letter-spacing="-1"
+          text-anchor="middle"
+        >
+          <textPath href="#depoimentos-titulo-arco" startOffset="50%">{ROTULO.toUpperCase()}</textPath>
+        </text>
+      </svg>
+    </h2>
+
+  <ul
+    class="focus-visible:outline-lima-400 mt-3 flex snap-x snap-mandatory gap-6 overflow-x-auto overscroll-x-contain rounded-[2rem] [scrollbar-width:none] focus-visible:outline-2 focus-visible:outline-offset-4 [&::-webkit-scrollbar]:hidden"
+    tabindex="0"
+    aria-label="Depoimentos de clientes"
+    data-trilho
+  >
+    {
+      DEPOIMENTOS.map((depoimento, i) => {
+        const nota = depoimento.nota ?? 5;
+        return (
+          <li
+            class="slide flex w-full shrink-0 snap-start snap-always flex-col pt-12 sm:w-[calc(50%-0.75rem)] lg:w-[calc((100%-3rem)/3)]"
+            style={`--i: ${i}`}
+            role="group"
+            aria-roledescription="slide"
+            aria-label={`${i + 1} de ${DEPOIMENTOS.length}`}
+            data-indice={i}
+          >
+            <div class="cartao flex w-full flex-1 flex-col">
+              <div class="relative z-10 mx-auto size-24">
+                <div class="avatar size-full" aria-hidden="true">
+                  {depoimento.foto ? (
+                    <Image
+                      src={depoimento.foto}
+                      alt=""
+                      widths={[256, 352, 512]}
+                      sizes="96px"
+                      class="size-full rounded-full object-cover"
+                    />
+                  ) : (
+                    <span class="display bg-lima-400 text-glicinia-900 grid size-full place-items-center rounded-full text-3xl">
+                      {iniciais(depoimento.autor)}
+                    </span>
+                  )}
+                </div>
+
+                {/* Estrelas em volta da foto: cada uma gira a partir do centro e
+                    é empurrada pra fora. 5 estrelas, de 30° em 30°. */}
+                <span role="img" aria-label={`Nota ${nota} de 5`}>
+                  {Array.from({ length: 5 }, (_, estrela) => (
+                    <svg
+                      viewBox="0 0 24 24"
+                      class:list={[
+                        'estrela absolute top-1/2 left-1/2 -mt-3.5 -ml-3.5 size-7',
+                        estrela < nota ? 'text-lima-400' : 'opacity-20',
+                      ]}
+                      style={`--k: ${estrela}; transform: rotate(${(estrela - 2) * 30}deg) translateY(-4.4rem)`}
+                      fill="currentColor"
+                      aria-hidden="true"
+                    >
+                      <path class:list={[estrela < nota && 'brilho']} d={ESTRELA} />
+                    </svg>
+                  ))}
+                </span>
+              </div>
+
+              <figure class="bg-glicinia-200 text-glicinia-900 -mt-12 flex aspect-square flex-1 flex-col items-center rounded-3xl px-7 pt-[4.25rem] pb-8 text-center transition-shadow duration-300">
+                <figcaption>
+                  <span class="block text-[1.375rem] leading-tight font-semibold tracking-tight">
+                    {depoimento.autor}
+                  </span>
+                  {depoimento.cargo && (
+                    <span class="text-glicinia-900/75 mt-1.5 block text-xs font-medium tracking-wider uppercase">
+                      {depoimento.cargo}
+                    </span>
+                  )}
+                </figcaption>
+
+                <span class="linha bg-tronco-600 mt-5 block h-0.5 w-10 rounded-full" aria-hidden="true" />
+
+                <blockquote class="mt-5 text-pretty">
+                  {depoimento.titulo && (
+                    <p class="text-base leading-snug font-semibold">{depoimento.titulo}</p>
+                  )}
+                  <p class:list={['text-sm leading-relaxed', depoimento.titulo && 'mt-2']}>
+                    &ldquo;{depoimento.texto}&rdquo;
+                  </p>
+                </blockquote>
+              </figure>
+            </div>
+          </li>
+        );
+      })
+    }
+  </ul>
+
+  {
+    DEPOIMENTOS.length > 1 && (
+      <div class="mt-10 flex items-center justify-center gap-4 sm:mt-12" data-controles>
+        <button type="button" class={BOTAO} aria-label="Depoimento anterior" data-anterior>
+          <Icon name="arrow" class="size-4 rotate-180 transition-transform group-hover:-translate-x-0.5" />
+        </button>
+
+        <div class="flex items-center">
+          {DEPOIMENTOS.map((_, i) => (
+            <button
+              type="button"
+              class="group focus-visible:outline-lima-400 grid h-6 place-items-center rounded-full px-1 focus-visible:outline-2"
+              aria-label={`Ir para o depoimento ${i + 1}`}
+              aria-current={i === 0 ? 'true' : 'false'}
+              data-ponto
+            >
+              <span class="bg-areia-300/50 group-hover:bg-areia-300 group-aria-[current=true]:bg-lima-400 h-2 w-2 rounded-full transition-all duration-300 group-aria-[current=true]:w-6" />
+            </button>
+          ))}
+        </div>
+
+        <button type="button" class={BOTAO} aria-label="Próximo depoimento" data-proximo>
+          <Icon name="arrow" class="size-4 transition-transform group-hover:translate-x-0.5" />
+        </button>
+
+      </div>
+    )
+  }
+  </div>
+</section>
+
+<style>
+  /* Entrada da seção (qdo aparece na tela): card sobe, foto cresce,
+     estrelas pipocam uma a uma e o traço se desenha. Cada card entra 120ms
+     depois do anterior. Só roda c/ JS e s/ "reduzir movimento"; fora disso
+     tá tudo já no lugar. */
+  .slide {
+    --atraso: calc(var(--i) * 120ms);
+    --suave: cubic-bezier(0.22, 1, 0.36, 1);
+    --mola: cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .cartao {
+    transition:
+      opacity 700ms var(--suave) var(--atraso),
+      transform 700ms var(--suave) var(--atraso),
+      translate 300ms var(--suave);
+  }
+  .avatar {
+    transition:
+      opacity 500ms var(--suave) calc(var(--atraso) + 150ms),
+      scale 600ms var(--mola) calc(var(--atraso) + 150ms);
+  }
+  .estrela {
+    --atraso-estrela: calc(var(--atraso) + 450ms + var(--k) * 70ms);
+    transition:
+      opacity 300ms ease var(--atraso-estrela),
+      scale 500ms var(--mola) var(--atraso-estrela);
+  }
+  .linha {
+    transition: scale 800ms var(--suave) calc(var(--atraso) + 650ms);
+  }
+
+  [data-animar]:not([data-visivel]) .cartao {
+    opacity: 0;
+    transform: translateY(2rem);
+  }
+  [data-animar]:not([data-visivel]) .avatar {
+    opacity: 0;
+    scale: 0.6;
+  }
+  [data-animar]:not([data-visivel]) .estrela {
+    opacity: 0;
+    scale: 0;
+  }
+  [data-animar]:not([data-visivel]) .linha {
+    scale: 0 1;
+  }
+
+  /* Estrelas piscando em onda, da 1ª à última, depois da entrada.
+     Só p/ quem não pediu "reduzir movimento". */
+  @media (prefers-reduced-motion: no-preference) {
+    .brilho {
+      transform-box: fill-box;
+      transform-origin: center;
+      animation: piscar 3.2s ease-in-out calc(var(--atraso) + 1.2s + var(--k) * 320ms) infinite;
+    }
+  }
+
+  @keyframes piscar {
+    0%,
+    100% {
+      opacity: 1;
+      scale: 1;
+    }
+    50% {
+      opacity: 0.35;
+      scale: 0.8;
+    }
+  }
+
+  /* Hover (só c/ mouse): o card sobe um pouquinho */
+  @media (hover: hover) {
+    .cartao:hover {
+      translate: 0 -0.375rem;
+    }
+    .cartao:hover figure {
+      box-shadow: 0 1.5rem 3rem -1.5rem rgb(0 0 0 / 0.55);
+    }
+  }
+</style>
+
+<script>
+  const reduzirMovimento = matchMedia('(prefers-reduced-motion: reduce)');
+  // Tempo parado antes de girar sozinho
+  const INTERVALO = 6000;
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-carrossel]')) {
+    // Entrada: espera a seção aparecer e roda 1 vez só
+    if (!reduzirMovimento.matches) {
+      raiz.dataset.animar = '';
+      const observador = new IntersectionObserver(
+        ([entrada]) => {
+          if (!entrada.isIntersecting) return;
+          raiz.dataset.visivel = '';
+          observador.disconnect();
+        },
+        { threshold: 0.25 },
+      );
+      observador.observe(raiz);
+    }
+
+    const trilho = raiz.querySelector<HTMLElement>('[data-trilho]');
+    const controles = raiz.querySelector<HTMLElement>('[data-controles]');
+    const anterior = raiz.querySelector<HTMLButtonElement>('[data-anterior]');
+    const proximo = raiz.querySelector<HTMLButtonElement>('[data-proximo]');
+    const pontos = [...raiz.querySelectorAll<HTMLButtonElement>('[data-ponto]')];
+    if (!trilho || !controles || !anterior || !proximo) continue;
+
+    const total = trilho.children.length;
+    const slideEm = (i: number) => trilho.children[i] as HTMLElement;
+
+    // Distância de um card até o próximo (largura + espaço).
+    // Muda c/ o tamanho da tela, então mede sempre.
+    const passo = () =>
+      slideEm(1).getBoundingClientRect().left - slideEm(0).getBoundingClientRect().left;
+    // Margem de 2px: o snap às vezes para um tiquinho antes
+    const chegou = (destino: number) => Math.abs(trilho.scrollLeft - destino) < 2;
+    // Quantos cards cabem na tela: 1, 2 ou 3
+    const porVez = () => Math.round(trilho.clientWidth / passo());
+    const navegavel = () => total > porVez();
+    const atual = () => Math.round(trilho.scrollLeft / passo());
+    const ativo = () => Number(slideEm(atual()).dataset.indice);
+
+    // Loop infinito: troca os cards de ponta e ajusta a rolagem junto,
+    // então não pula nada na tela. n > 0 manda os primeiros pro fim;
+    // n < 0 traz os últimos pro começo.
+    const girar = (n: number) => {
+      if (!n) return;
+      const largura = passo();
+      trilho.style.scrollSnapType = 'none';
+      for (let k = 0; k < Math.abs(n); k++) {
+        if (n > 0) trilho.append(trilho.firstElementChild!);
+        else trilho.prepend(trilho.lastElementChild!);
+      }
+      trilho.scrollLeft -= n * largura;
+      trilho.style.scrollSnapType = '';
+    };
+
+    // Deixa folga dos 2 lados p/ dar pra arrastar pra qualquer direção
+    const normalizar = () => {
+      const folga = total - porVez();
+      if (folga < 1) return;
+      girar(atual() - (folga >= 2 ? 1 : 0));
+    };
+
+    const atualizar = () => {
+      controles.hidden = !navegavel();
+      const i = ativo();
+      pontos.forEach((ponto, j) => ponto.setAttribute('aria-current', String(j === i)));
+    };
+
+    // Rolagem (setas, pontos ou autoplay) que ainda não terminou
+    let pendente: { destino: number; fim: () => void } | undefined;
+    let andando = false;
+
+    // Detecta qdo a rolagem acabou (dedo, roda ou seta).
+    // Sem o evento nativo, espera 150ms parado.
+    let espera: ReturnType<typeof setTimeout> | undefined;
+    const parou = () => {
+      if (pendente) {
+        if (!chegou(pendente.destino)) return;
+        pendente.fim();
+      }
+      if (!andando) normalizar();
+      atualizar();
+    };
+    if ('onscrollend' in window) trilho.addEventListener('scrollend', parou);
+    trilho.addEventListener(
+      'scroll',
+      () => {
+        atualizar();
+        if ('onscrollend' in window) return;
+        clearTimeout(espera);
+        espera = setTimeout(parou, 150);
+      },
+      { passive: true },
+    );
+
+    const rolarPara = (posicao: number) =>
+      new Promise<void>((resolver) => {
+        const destino = posicao * passo();
+        if (chegou(destino)) return resolver();
+        const fim = () => {
+          clearTimeout(seguranca);
+          pendente = undefined;
+          resolver();
+        };
+        // Plano B: se o dedo atrapalhar, libera após 2s
+        const seguranca = setTimeout(fim, 2000);
+        pendente = { destino, fim };
+        trilho.scrollTo({ left: destino, behavior: reduzirMovimento.matches ? 'auto' : 'smooth' });
+      });
+
+    // Anda 1 card; se acabou o espaço, gira o trilho antes
+    const avancar = async (sentido: 1 | -1) => {
+      const maximo = total - porVez();
+      const c = atual();
+      if (c + sentido > maximo) girar(c + sentido - maximo);
+      else if (c + sentido < 0) girar(c + sentido);
+      await rolarPara(atual() + sentido);
+    };
+
+    const andar = async (cards: number) => {
+      if (andando || !navegavel()) return;
+      andando = true;
+      for (let k = 0; k < Math.abs(cards); k++) await avancar(cards > 0 ? 1 : -1);
+      andando = false;
+      normalizar();
+      atualizar();
+      agendar();
+    };
+
+    // Autoplay. Pausa c/ mouse em cima, foco do teclado, dedo na tela,
+    // seção fora da tela ou aba escondida. Quem pediu "reduzir movimento"
+    // não tem autoplay (usa só setas e pontos).
+    const motivos = new Set<string>();
+    let timer: ReturnType<typeof setTimeout> | undefined;
+
+    function agendar() {
+      clearTimeout(timer);
+      if (reduzirMovimento.matches || motivos.size || !navegavel()) return;
+      timer = setTimeout(() => andar(1), INTERVALO);
+    }
+    const segurar = (motivo: string, ligado: boolean) => {
+      if (ligado) motivos.add(motivo);
+      else motivos.delete(motivo);
+      agendar();
+    };
+
+    raiz.addEventListener('pointerenter', (e) => e.pointerType === 'mouse' && segurar('mouse', true));
+    raiz.addEventListener('pointerleave', (e) => e.pointerType === 'mouse' && segurar('mouse', false));
+    // Só foco de teclado (clique tb foca o botão e travaria o autoplay)
+    raiz.addEventListener('focusin', (e) => {
+      if ((e.target as HTMLElement).matches(':focus-visible')) segurar('foco', true);
+    });
+    raiz.addEventListener('focusout', (e) => {
+      if (!raiz.contains(e.relatedTarget as Node | null)) segurar('foco', false);
+    });
+    trilho.addEventListener('pointerdown', () => segurar('toque', true));
+    addEventListener('pointerup', () => segurar('toque', false));
+    addEventListener('pointercancel', () => segurar('toque', false));
+    new IntersectionObserver(([entrada]) => segurar('fora', !entrada.isIntersecting)).observe(raiz);
+    document.addEventListener('visibilitychange', () => segurar('aba', document.hidden));
+
+    anterior.addEventListener('click', () => andar(-1));
+    proximo.addEventListener('click', () => andar(1));
+    // Vai pelo caminho mais curto (do 1 pro 4 volta 1, não avança 3)
+    pontos.forEach((ponto, j) =>
+      ponto.addEventListener('click', () => {
+        let cards = (((j - ativo()) % total) + total) % total;
+        if (cards > total / 2) cards -= total;
+        andar(cards);
+      }),
+    );
+    addEventListener('resize', () => {
+      atualizar();
+      agendar();
+    });
+
+    normalizar();
+    atualizar();
+    agendar();
+  }
+</script>
