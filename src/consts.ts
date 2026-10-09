@@ -1,6 +1,6 @@
 // Dados usados pelo SEO e pelo conteúdo fixo do site.
 // TODO: "Órbita" é um nome de placeholder — troque por sua marca real.
-// TODO: troque também SITE.url, SITE.email e SITE.links pelos dados reais
+// TODO: troque também SITE.url e SITE.links pelos dados reais
 // antes do primeiro deploy — canonical, Open Graph, sitemap e contato
 // dependem deles.
 import type { ImageMetadata } from 'astro';
@@ -12,7 +12,9 @@ export const SITE = {
   title: 'Órbita — Estúdio de Desenvolvimento E-commerce',
   description:
     'Estúdio de desenvolvimento focado em e-commerce. Construímos lojas Shopify rápidas, sites institucionais e integrações sob medida para marcas brasileiras.',
-  email: 'contato@orbita.dev',
+  email: 'juansimao5@gmail.com',
+  /** `exibicao` é o que aparece na tela; `link` vai no href (tel:). */
+  telefone: { exibicao: '(11) 97231-6191', link: 'tel:+5511972316191' },
   lang: 'pt-BR',
   locale: 'pt_BR',
   ogImage: '/og-default.png',

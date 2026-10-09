@@ -154,6 +154,11 @@ const isActive = (href: string) => href.startsWith('/') && !href.includes('#') &
                     {SITE.email}
                   </a>
                 </li>
+                <li>
+                  <a href={SITE.telefone.link} class="transition-colors hover:text-white">
+                    {SITE.telefone.exibicao}
+                  </a>
+                </li>
                 {
                   SITE.links.map((link) => (
                     <li>

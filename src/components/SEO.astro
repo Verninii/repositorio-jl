@@ -34,6 +34,7 @@ const baseSchema = {
   url: SITE.url,
   description: SITE.description,
   email: SITE.email,
+  telephone: SITE.telefone.link.replace('tel:', ''),
 };
 const jsonLd = schema ?? baseSchema;
 ---
