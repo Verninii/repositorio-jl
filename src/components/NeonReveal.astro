@@ -1,0 +1,140 @@
+---
+import { NEON_DEFAULTS, type NeonConfig } from '../scripts/neon-reveal';
+
+interface Props {
+  /** Sobrescreve a configuração do efeito (cores, direção, timing, etc.). */
+  config?: Partial<NeonConfig>;
+  /** Altura mínima da faixa (CSS, ex.: "16rem"). Padrão 20rem. */
+  minHeight?: string;
+  /** Esmaece as laterais do glow (máscara horizontal), p/ a borda não marcar
+   *  quando o neon é mais estreito que a section. true = 8%, ou um valor CSS. */
+  edgeFade?: boolean | string;
+  class?: string;
+}
+
+const { config = {}, minHeight, edgeFade, class: className } = Astro.props;
+const merged: NeonConfig = { ...NEON_DEFAULTS, ...config };
+const fade = edgeFade === true ? '8%' : typeof edgeFade === 'string' ? edgeFade : undefined;
+
+// Com conteúdo no slot `foreground`, o neon vira uma camada de FUNDO de altura
+// cheia: o glow desce por trás de tudo e o primeiro plano fica acima dele
+// (nunca mascarado nem coberto). Sem esse slot, é a faixa única padrão.
+const hasForeground = Astro.slots.has('foreground');
+
+const vars = `--nr-bg:${merged.backgroundColor};--nr-inset:${merged.inset}px;${
+  minHeight ? `--nr-min-h:${minHeight};` : ''
+}${fade ? `--nr-edge:${fade};` : ''}`;
+---
+
+<neon-reveal
+  class:list={['neon-reveal', hasForeground && 'has-foreground', fade && 'has-edge-fade', className]}
+  data-config={JSON.stringify(merged)}
+  data-intro={merged.intro ? '' : undefined}
+  style={vars}
+>
+  <div class="nr-content">
+    <slot />
+  </div>
+  <canvas aria-hidden="true"></canvas>
+  {
+    hasForeground && (
+      <div class="nr-foreground">
+        <slot name="foreground" />
+      </div>
+    )
+  }
+</neon-reveal>
+
+<noscript>
+  <style>
+    neon-reveal .nr-content {
+      visibility: visible !important;
+    }
+  </style>
+</noscript>
+
+<style>
+  neon-reveal {
+    display: grid;
+    width: 100%;
+    min-height: var(--nr-min-h, 20rem);
+    position: relative;
+    overflow: hidden;
+    background: var(--nr-bg, transparent);
+  }
+  .nr-content {
+    grid-area: 1 / 1;
+    z-index: 0;
+    display: grid;
+    place-items: center;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    min-height: 100%;
+    padding: calc(var(--nr-inset, 24px) + 1.5rem) 1.5rem;
+    position: relative;
+  }
+  /* Só o canvas do glow (filho direto), nunca um canvas aninhado no slot. */
+  neon-reveal > canvas {
+    grid-area: 1 / 1;
+    z-index: 1;
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  /* Esmaece as laterais do glow para a borda não marcar contra o fundo. */
+  .has-edge-fade > canvas {
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 var(--nr-edge, 8%),
+      #000 calc(100% - var(--nr-edge, 8%)),
+      transparent
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      #000 var(--nr-edge, 8%),
+      #000 calc(100% - var(--nr-edge, 8%)),
+      transparent
+    );
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+  }
+
+  /* Modo camada de fundo: o canvas (glow) cobre a altura inteira; o cabeçalho é
+     revelado no topo (sob o glow) e o primeiro plano fica acima do glow. */
+  neon-reveal.has-foreground {
+    display: block;
+  }
+  .has-foreground .nr-content {
+    grid-area: auto;
+    min-height: 0;
+    /* Folga entre o cabeçalho e o primeiro plano (slider). */
+    padding-bottom: 0;
+    margin-bottom: 3rem;
+  }
+  .nr-foreground {
+    position: relative;
+    z-index: 2;
+  }
+
+  /* Antes do JS definir o elemento, evita o flash do conteúdo não-revelado. */
+  neon-reveal[data-intro]:not(:defined) .nr-content {
+    visibility: hidden;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    neon-reveal:not(:defined) .nr-content {
+      visibility: visible;
+    }
+  }
+</style>
+
+<script>
+  import { defineNeonReveal } from '../scripts/neon-reveal';
+  defineNeonReveal();
+</script>

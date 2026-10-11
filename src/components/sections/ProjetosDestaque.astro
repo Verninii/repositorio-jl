@@ -1,0 +1,294 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { getImage } from 'astro:assets';
+import siteDeJandira from '../../assets/site-de-jandira.png';
+import ProjectCard from '../ProjectCard.astro';
+import Icon from '../Icon.astro';
+import NeonReveal from '../NeonReveal.astro';
+
+interface Props {
+  /** Projetos em destaque, já ordenados pela página. */
+  projetos: CollectionEntry<'projetos'>[];
+}
+
+const { projetos } = Astro.props;
+
+// Slides do carrossel: capa do projeto (ou o placeholder atual) + metadados.
+// Resolve uma versão raster otimizada que o motor sobe como textura WebGL.
+const slides = await Promise.all(
+  projetos.map(async (projeto) => {
+    const fonte = projeto.data.capa ?? siteDeJandira;
+    const imagem = await getImage({ src: fonte, width: 1200, format: 'webp' });
+    return {
+      src: imagem.src,
+      alt: projeto.data.capa ? (projeto.data.capaAlt ?? projeto.data.title) : projeto.data.title,
+      title: projeto.data.title,
+      subtitle: `${projeto.data.tipo} · ${projeto.data.ano}`,
+      href: `/projetos/${projeto.id}`,
+    };
+  }),
+);
+
+const total = String(slides.length).padStart(2, '0');
+
+// Botão redondo dos controles, no estilo do site.
+const BOTAO =
+  'border-white/25 text-white hover:border-white/50 hover:bg-white/10 focus-visible:outline-peri-300 grid size-11 place-items-center rounded-full border transition-colors focus-visible:outline-2 focus-visible:outline-offset-2';
+---
+
+<!-- PROJETOS EM DESTAQUE — carrossel côncavo em WebGL2 (progressive enhancement).
+     Sem JS/WebGL cai na grade de cards, que é a camada indexável e acessível.
+     scroll-mt-24 compensa o header fixo do Layout quando chega pela âncora. -->
+<section id="projetos" class="w-full scroll-mt-24 bg-[#6384c8]">
+  <!-- Fundo #6384c8 full-width na section (mesma cor do backgroundColor do
+       neon). O <neon-reveal> fica delimitado à largura do conteúdo (max-w-6xl):
+       o glow/tubo e o cabeçalho ficam contidos. `forceMode: 'dark'` mantém o
+       feixe aditivo/reluzente mesmo sobre esse fundo claro (a luminância do
+       #6384c8 fica raspando no limite e cairia no modo pastel). O glow desce por
+       trás do cabeçalho e do slider (slot `foreground`), sem cobrir o slider. -->
+  <NeonReveal
+    class="mx-auto max-w-6xl"
+    edgeFade="30%"
+    config={{
+      backgroundColor: '#6384c8',
+      colors: ['#d7e2ff', '#b5b2e8'],
+      forceMode: 'dark',
+      trigger: 'inView',
+      revealDelay: 150,
+      reach: 2.5,
+      intensity: 1.1,
+      glow: 1.1,
+      length: 1,
+    }}
+  >
+    <!-- Cabeçalho revelado pelo neon (continua no DOM / indexável). -->
+    <div class="text-center">
+      <p class="text-xs font-semibold tracking-widest text-white/50 uppercase">
+        Projetos em destaque
+      </p>
+      <h2 class="display mt-3 text-5xl text-white sm:text-7xl">Resultados reais</h2>
+    </div>
+
+    <!-- Primeiro plano: acima do glow, nunca coberto. -->
+    <div slot="foreground" class="px-6 pb-14 sm:px-12 sm:pb-20">
+      {
+        slides.length > 0 ? (
+          <>
+            <div class="relative z-10 flex justify-end">
+              <!-- Leve rotação p/ acompanhar a curvatura/perspectiva do slider
+                   na direita. origin-right ancora na borda; ajuste o grau/sinal. -->
+              <a
+                href="/projetos"
+                class="inline-flex origin-right rotate-357 items-center gap-2 px-2 py-2.5 text-sm font-semibold text-white transition-colors hover:text-white/70"
+              >
+                Ver todos
+              </a>
+            </div>
+
+            <div
+              class="relative -mt-22 text-white"
+              data-concave-root
+              data-slides={JSON.stringify(slides)}
+              role="region"
+              aria-roledescription="carrossel"
+              aria-label="Projetos em destaque"
+              tabindex="0"
+              hidden
+            >
+              <div
+                class="relative h-[340px] touch-pan-y select-none sm:h-[500px]"
+                data-stage
+              >
+                <canvas class="absolute inset-0 block h-full w-full" data-canvas aria-hidden="true" />
+              </div>
+
+              <div class="mt-4 flex flex-col items-center gap-4 text-center">
+                <div class="flex h-12 flex-col items-center justify-center" data-caption>
+                  <p class="display max-w-full truncate text-xl text-white sm:text-2xl" data-title />
+                  <p class="mt-1 max-w-full truncate text-sm text-white/60" data-subtitle />
+                </div>
+
+                <div class="flex items-center gap-4">
+                  <button type="button" class={BOTAO} aria-label="Projeto anterior" data-prev>
+                    <Icon name="arrow" class="size-4 rotate-180" />
+                  </button>
+                  <span
+                    class="min-w-[4.5rem] text-xs font-semibold tracking-widest text-white/60 tabular-nums"
+                    data-counter
+                  >
+                    01 / {total}
+                  </span>
+                  <button type="button" class={BOTAO} aria-label="Próximo projeto" data-next>
+                    <Icon name="arrow" class="size-4" />
+                  </button>
+                </div>
+              </div>
+
+              <p class="sr-only" aria-live="polite" data-live />
+            </div>
+
+            <div class="mt-10 grid gap-5 sm:grid-cols-2" data-fallback>
+              {projetos.map((projeto, i) => (
+                <ProjectCard projeto={projeto} tom={i % 2 === 0 ? 'creme' : 'branco'} />
+              ))}
+            </div>
+          </>
+        ) : (
+          <p class="mt-10 text-white/60">
+            Nenhum projeto publicado. Adicione um arquivo em <code>src/content/projetos/</code>.
+          </p>
+        )
+      }
+    </div>
+  </NeonReveal>
+</section>
+
+<style>
+  /* Rede de segurança: o atributo `hidden` (trocado pelo script no enhancement)
+     vence o display mesmo se o preflight do Tailwind mudar. */
+  [data-concave-root][hidden],
+  [data-fallback][hidden] {
+    display: none;
+  }
+</style>
+
+<script>
+  import { createConcaveEngine, readPalette, type ConcaveConfig } from '../../scripts/concave-carousel';
+
+  interface Slide {
+    src: string;
+    alt: string;
+    title: string;
+    subtitle: string;
+    href: string;
+  }
+
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+
+  for (const root of document.querySelectorAll<HTMLElement>('[data-concave-root]')) {
+    const stage = root.querySelector<HTMLElement>('[data-stage]');
+    const canvas = root.querySelector<HTMLCanvasElement>('[data-canvas]');
+    const titleEl = root.querySelector<HTMLElement>('[data-title]');
+    const subtitleEl = root.querySelector<HTMLElement>('[data-subtitle]');
+    const counterEl = root.querySelector<HTMLElement>('[data-counter]');
+    const liveEl = root.querySelector<HTMLElement>('[data-live]');
+    const captionEl = root.querySelector<HTMLElement>('[data-caption]');
+    const prevBtn = root.querySelector<HTMLButtonElement>('[data-prev]');
+    const nextBtn = root.querySelector<HTMLButtonElement>('[data-next]');
+    const fallback = root.parentElement?.querySelector<HTMLElement>('[data-fallback]');
+
+    if (!stage || !canvas) continue;
+
+    let slides: Slide[] = [];
+    try {
+      slides = JSON.parse(root.dataset.slides || '[]');
+    } catch {
+      continue;
+    }
+    if (slides.length === 0) continue;
+
+    const config: ConcaveConfig = {
+      count: slides.length,
+      aspect: 1.25,
+      size: 0.46,
+      curvature: 0.72,
+      distance: 4,
+      tilt: 0,
+      gap: 16,
+      radius: 14,
+      reflection: 0.06,
+      dim: 0.40,
+      autoplay: 'drift',
+      speed: 0.16,
+      interval: 4,
+      snap: true,
+      inertia: 0.5,
+      pauseOnHover: true,
+      draggable: true,
+      wheel: false, // não sequestra o scroll da página
+      paused: false,
+      reducedMotion: reduceMotion.matches,
+      dpr: 2,
+      palette: null,
+    };
+
+    const total = String(slides.length).padStart(2, '0');
+    const pad = (n: number) => String(n + 1).padStart(2, '0');
+
+    const renderCaption = (i: number) => {
+      const slide = slides[i];
+      if (!slide) return;
+      if (titleEl) titleEl.textContent = slide.title;
+      if (subtitleEl) subtitleEl.textContent = slide.subtitle;
+      if (counterEl) counterEl.textContent = `${pad(i)} / ${total}`;
+      if (liveEl) liveEl.textContent = `Projeto ${i + 1} de ${slides.length}: ${slide.title}`;
+      if (captionEl && !reduceMotion.matches) {
+        captionEl.animate(
+          [
+            { opacity: 0, transform: 'translateY(6px)', filter: 'blur(4px)' },
+            { opacity: 1, transform: 'none', filter: 'blur(0)' },
+          ],
+          { duration: 420, easing: 'cubic-bezier(.2,.7,.2,1)' },
+        );
+      }
+    };
+
+    const engine = createConcaveEngine(canvas, stage, {
+      startIndex: 0,
+      getConfig: () => config,
+      onActive: (i) => renderCaption(i),
+      onSelect: (i) => {
+        const href = slides[i]?.href;
+        if (href) window.location.assign(href);
+      },
+    });
+
+    // Sem WebGL2: mantém a grade acessível e descarta o carrossel.
+    if (!engine) continue;
+
+    // Progressive enhancement: revela o carrossel, esconde a grade.
+    root.hidden = false;
+    if (fallback) fallback.hidden = true;
+
+    config.palette = readPalette(stage, 'transparent');
+    engine.setItems(slides.map((s) => s.src));
+    renderCaption(0);
+
+    // O site é só claro, mas recalcula a paleta se o SO alternar o esquema.
+    matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+      config.palette = readPalette(stage, 'transparent');
+      engine.invalidate();
+    });
+    reduceMotion.addEventListener('change', () => {
+      config.reducedMotion = reduceMotion.matches;
+    });
+
+    // Arrasto no palco.
+    stage.addEventListener('pointerdown', (e) => engine.pointerDown(e));
+    stage.addEventListener('pointermove', (e) => engine.pointerMove(e));
+    stage.addEventListener('pointerup', (e) => engine.pointerUp(e));
+    stage.addEventListener('pointercancel', (e) => engine.pointerUp(e, true));
+    stage.addEventListener('pointerleave', () => engine.pointerLeave());
+
+    prevBtn?.addEventListener('click', () => engine.previous());
+    nextBtn?.addEventListener('click', () => engine.next());
+
+    // Teclado: só quando o foco está na região (não nos botões internos).
+    root.addEventListener('keydown', (e) => {
+      if (e.target !== e.currentTarget) return;
+      if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        engine.next();
+      } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        engine.previous();
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        engine.selectCurrent();
+      } else if (e.key === ' ') {
+        e.preventDefault();
+        config.paused = !config.paused;
+      }
+    });
+  }
+</script>

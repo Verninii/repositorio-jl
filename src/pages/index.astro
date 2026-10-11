@@ -1,10 +1,10 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
-import ProjectCard from '../components/ProjectCard.astro';
 import Icon from '../components/Icon.astro';
 import Hero from '../components/sections/Hero.astro';
 import Depoimentos from '../components/sections/Depoimentos.astro';
+import ProjetosDestaque from '../components/sections/ProjetosDestaque.astro';
 import { SITE, SERVICOS, PROCESSO, STACK } from '../consts';
 
 const projetos = (await getCollection('projetos', ({ data }) => !data.draft)).sort(
@@ -96,43 +96,7 @@ const destaques = projetos.slice(0, 4);
     </div>
   </section>
 
-  <div class="mx-auto max-w-6xl space-y-4 px-4 pt-4 pb-4">
-    <!-- PROJETOS -->
-    <section id="projetos" class="scroll-mt-24 rounded-3xl bg-white px-6 py-14 sm:px-12 sm:py-20">
-      <div class="flex flex-wrap items-end justify-between gap-6">
-        <div>
-          <p class="text-ink-500 text-xs font-semibold tracking-widest uppercase">
-            Projetos em destaque
-          </p>
-          <h2 class="display mt-4 text-5xl sm:text-6xl">Resultados reais</h2>
-        </div>
-        <a
-          href="/projetos"
-          class="border-ink-900/25 hover:bg-ink-900/5 inline-flex items-center gap-2 rounded-full border px-5 py-2.5 text-sm font-semibold transition-colors"
-        >
-          Ver todos
-          <Icon name="arrow" class="size-4" />
-        </a>
-      </div>
-
-      <div class="mt-10 grid gap-5 sm:grid-cols-2">
-        {
-          destaques.map((projeto, i) => (
-            <ProjectCard projeto={projeto} tom={i % 2 === 0 ? 'creme' : 'branco'} />
-          ))
-        }
-      </div>
-
-      {
-        destaques.length === 0 && (
-          <p class="text-ink-500 mt-10">
-            Nenhum projeto publicado. Adicione um arquivo em <code>src/content/projetos/</code>.
-          </p>
-        )
-      }
-    </section>
-
-  </div>
+  <ProjetosDestaque projetos={destaques} />
 
   <Depoimentos />
 
