@@ -12,30 +12,37 @@ const projetos = (await getCollection('projetos', ({ data }) => !data.draft)).so
   title="Projetos"
   description="Projetos de e-commerce e desenvolvimento web entregues pelo nosso time: escopo, stack e resultado de cada um."
 >
-  <section class="bg-butter-200 w-full py-20 sm:py-28">
+  <section
+    class="relative isolate w-full overflow-hidden bg-noite-950 pt-8 pb-[calc(5rem+var(--folha))] sm:pt-12 sm:pb-[calc(6rem+var(--folha))]"
+  >
+    <div class="absolute inset-0 -z-10" aria-hidden="true">
+      <div class="grade absolute inset-0 opacity-60"></div>
+      <div
+        class="absolute -top-40 -right-24 size-[34rem] bg-[radial-gradient(closest-side,rgb(59_123_224/0.4),transparent)]"
+      >
+      </div>
+    </div>
     <div class="mx-auto max-w-7xl px-6 sm:px-10">
-      <p class="text-ink-500 text-xs font-semibold tracking-widest uppercase">Portfólio</p>
-      <h1 class="display text-peri-500 mt-4 text-6xl sm:text-8xl">Projetos</h1>
-      <p class="text-ink-700 mt-6 max-w-xl text-lg leading-relaxed">
-        Cada card abre um estudo de caso com o contexto do cliente, as decisões técnicas e o
-        que foi medido depois da entrega.
+      <p class="rotulo text-noite-300">Portfólio</p>
+      <h1 class="display mt-4 text-6xl text-white sm:text-8xl">Projetos</h1>
+      <p class="text-noite-200/85 mt-6 max-w-xl text-lg leading-relaxed">
+        Cada card abre um estudo de caso com o contexto do cliente, as decisões técnicas e o que
+        foi medido depois da entrega.
       </p>
     </div>
   </section>
 
-  <section class="bg-butter-50 w-full py-16 sm:py-20">
+  <section
+    class="folha bg-noite-100 text-noite-900 w-full pt-16 pb-[calc(4rem+var(--folha))] sm:pt-20 sm:pb-[calc(5rem+var(--folha))]"
+  >
     <div class="mx-auto max-w-7xl px-6 sm:px-10">
       <div class="grid gap-6 sm:grid-cols-2">
-        {
-          projetos.map((projeto, i) => (
-            <ProjectCard projeto={projeto} tom={i % 2 === 0 ? 'creme' : 'branco'} />
-          ))
-        }
+        {projetos.map((projeto) => <ProjectCard projeto={projeto} />)}
       </div>
 
       {
         projetos.length === 0 && (
-          <p class="text-ink-500">
+          <p class="text-noite-900/70">
             Nenhum projeto publicado. Adicione um arquivo em <code>src/content/projetos/</code>.
           </p>
         )
