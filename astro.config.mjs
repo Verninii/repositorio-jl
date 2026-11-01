@@ -20,21 +20,6 @@ export default defineConfig({
       weights: ['400 700'],
       subsets: ['latin'],
     },
-    {
-      provider: fontProviders.google(),
-      name: 'Archivo Black',
-      cssVariable: '--font-archivo',
-      weights: [400],
-      subsets: ['latin'],
-    },
-    {
-      provider: fontProviders.google(),
-      name: 'Playfair Display',
-      cssVariable: '--font-playfair',
-      weights: ['400 800'],
-      styles: ['normal', 'italic'],
-      subsets: ['latin'],
-    },
   ],
 
   vite: {

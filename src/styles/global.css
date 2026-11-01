@@ -3,7 +3,7 @@
 
 @theme {
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 
   --color-butter-50: #fbf8f2;
   --color-butter-100: #f5f0e6;
@@ -27,66 +27,75 @@
   --color-ink-700: #3a3a42;
   --color-ink-500: #676771;
 
-  --font-serif: var(--font-playfair), ui-serif, Georgia, serif;
-  --color-sol-100: #fff7d6;
-  --color-sol-200: #fff2b2;
-  --color-sol-300: #ffe08a;
-  --color-ceu-300: #a8c6e7;
-  --color-ceu-700: #2e4a6e;
-  --color-ceu-900: #1c2e47;
-  --color-azul: var(--color-ceu-900);
-  --color-bege: var(--color-sol-200);
-  --color-azul-claro: var(--color-ceu-300);
-
   --color-noite-100: #e9f0fd;
   --color-noite-200: #d3e2fa;
   --color-noite-300: #8fb8f5;
+  --color-noite-400: #5b97ec;
   --color-noite-500: #3b7be0;
+  --color-noite-600: #2f6fd6;
   --color-noite-700: #1d4ab0;
+  --color-noite-800: #16399a;
   --color-noite-900: #0b1e4a;
   --color-noite-950: #071433;
 
-  --color-glicinia-900: #0f2b57;
-  --color-glicinia-700: #2961b1;
-  --color-glicinia-500: #64a8e5;
-  --color-glicinia-200: #bed7f4;
-  --color-lima-400: #c7d42b;
-  --color-areia-300: #d3c399;
-  --color-tronco-600: #7a6142;
+  --color-sol-300: #ffe08a;
+}
+
+:root {
+  --folha: 2rem;
+  --py: 5rem;
+}
+@media (min-width: 640px) {
+  :root {
+    --folha: 2.5rem;
+    --py: 7rem;
+  }
+}
+@media (min-width: 1024px) {
+  :root {
+    --py: 8rem;
+  }
 }
 
 html {
-  color-scheme: light;
+  color-scheme: dark;
   scrollbar-gutter: stable;
+  background: var(--color-noite-950);
 }
 
 .display {
   font-family: var(--font-display);
-  text-transform: uppercase;
-  letter-spacing: -0.02em;
-  line-height: 1.12;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  line-height: 1.02;
   overflow-wrap: anywhere;
 }
 
 @layer components {
-  .display-serif {
-    font-family: var(--font-serif);
-    font-weight: 500;
-    letter-spacing: -0.02em;
-    line-height: 1.05;
-    font-variant-numeric: lining-nums;
-    overflow-wrap: anywhere;
-  }
-  .display-serif em {
-    font-style: italic;
-    font-weight: 500;
-  }
-
   .rotulo {
     font-size: 0.75rem;
     font-weight: 600;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
+  }
+
+  .folha {
+    position: relative;
+    margin-top: calc(var(--folha) * -1);
+    border-radius: var(--folha) var(--folha) 0 0;
+  }
+
+  .secao {
+    padding-top: var(--py);
+    padding-bottom: calc(var(--py) + var(--folha));
+  }
+
+  .grade {
+    background-image:
+      linear-gradient(rgb(255 255 255 / 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(255 255 255 / 0.07) 1px, transparent 1px);
+    background-size: 3.5rem 3.5rem;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 25%, transparent 78%);
   }
 }
 
