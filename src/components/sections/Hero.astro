@@ -1,13 +1,13 @@
 ---
 import { Picture } from 'astro:assets';
 import Icon from '../Icon.astro';
-import heroImagem from '../../assets/hero.webp';
-import { SITE } from '../../consts';
+import heroImagem from '../../assets/hero-azul.webp';
+import { SITE, NUMEROS } from '../../consts';
 ---
 
 <section
   id="inicio"
-  class="bg-peri-900 relative isolate flex h-screen min-h-fit w-full flex-col overflow-hidden text-white"
+  class="bg-noite-950 relative isolate flex min-h-svh w-full flex-col overflow-hidden text-white"
 >
   <div class="absolute inset-0 -z-10" aria-hidden="true">
     <Picture
@@ -19,45 +19,80 @@ import { SITE } from '../../consts';
       loading="eager"
       fetchpriority="high"
       pictureAttributes={{ class: 'absolute inset-0' }}
-      class="size-full object-cover object-center"
+      class="size-full object-cover object-[70%_center] lg:object-center"
     />
-    <div class="bg-peri-900/55 absolute inset-0 sm:bg-peri-900/35"></div>
-    <div class="from-peri-900/90 via-peri-900/55 absolute inset-0 bg-linear-to-r to-transparent"></div>
+    <div class="bg-noite-950/55 absolute inset-0 sm:bg-noite-950/15"></div>
     <div
-      class="from-peri-900 via-peri-900/40 absolute inset-x-0 bottom-0 h-1/3 bg-linear-to-t to-transparent"
+      class="from-noite-950 via-noite-950/95 absolute inset-0 bg-linear-to-r via-[54%] to-transparent to-[82%]"
+    >
+    </div>
+    <div
+      class="absolute top-1/2 -right-24 size-[46rem] -translate-y-1/2 bg-[radial-gradient(closest-side,rgb(59_123_224/0.4),transparent)]"
+    >
+    </div>
+    <div class="grade absolute inset-0 opacity-40"></div>
+    <svg
+      viewBox="0 0 200 200"
+      class="absolute top-1/2 -right-[18%] hidden size-[62rem] -translate-y-1/2 text-white/15 lg:block"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="0.25"
+    >
+      <circle cx="100" cy="100" r="96"></circle>
+      <circle cx="100" cy="100" r="72"></circle>
+      <circle cx="100" cy="100" r="48"></circle>
+      <circle cx="178" cy="44" r="4.5" fill="#fff" fill-opacity="0.18" stroke="none"></circle>
+      <circle cx="178" cy="44" r="1.7" fill="#fff" stroke="none"></circle>
+    </svg>
+    <div
+      class="from-noite-950/90 absolute inset-x-0 top-0 h-40 bg-linear-to-b to-transparent"
+    >
+    </div>
+    <div
+      class="from-noite-950 via-noite-950/50 absolute inset-x-0 bottom-0 h-2/5 bg-linear-to-t to-transparent"
     >
     </div>
   </div>
 
   <div
-    class="mx-auto flex w-full max-w-7xl flex-1 flex-col px-6 pt-28 pb-10 sm:px-10 sm:pt-36 sm:pb-16"
+    class="mx-auto flex w-full max-w-7xl flex-1 flex-col px-6 pt-28 pb-[calc(2rem+var(--folha))] sm:px-10 sm:pt-36 sm:pb-[calc(3rem+var(--folha))]"
   >
-    <div class="max-w-5xl">
-      <p class="text-peri-300 text-[0.8125rem] font-medium sm:text-sm">{SITE.tagline}</p>
-
-      <h1 class="titulo font-display text-butter-50 mt-5 text-balance sm:mt-6">
-        Tire a sua loja<br />
-        do papel.
-      </h1>
-    </div>
-
-    <div class="mt-auto max-w-xl pt-10">
-      <p class="text-base leading-relaxed text-pretty text-white/75 sm:text-lg">
-        Somos a {SITE.company}, um time de desenvolvedores que constrói e-commerce de ponta a ponta
-        — da estrutura do tema Shopify à última métrica de performance.
+    <div class="max-w-3xl">
+      <p
+        class="text-noite-100 inline-flex items-center gap-2.5 rounded-full border border-white/20 bg-white/10 py-1.5 pr-4 pl-3 text-xs font-medium sm:text-[0.8125rem]"
+      >
+        <span class="bg-noite-300 size-1.5 rounded-full" aria-hidden="true"></span>
+        {SITE.tagline}
       </p>
 
-      <div class="mt-8 flex flex-wrap items-center gap-2 sm:mt-10 sm:gap-3">
+      <h1 class="titulo display mt-6 text-balance text-white sm:mt-8">
+        Tire a sua loja<br />
+        <span class="from-white to-noite-300 inline-block bg-linear-to-r bg-clip-text pb-[0.12em] text-transparent">
+          do papel.
+        </span>
+      </h1>
+
+      <p class="mt-6 max-w-xl text-base leading-relaxed text-pretty text-white/80 sm:mt-8 sm:text-lg">
+        Somos a {SITE.company}, um time de desenvolvedores que constrói e-commerce de ponta a
+        ponta — da estrutura do tema Shopify à última métrica de performance.
+      </p>
+
+      <div class="mt-8 flex flex-wrap items-center gap-3 sm:mt-10">
         <a
           href="#projetos"
-          class="bg-butter-200 text-ink-900 hover:bg-butter-50 focus-visible:outline-butter-200 inline-flex min-h-12 items-center gap-2 rounded-full px-4 py-3.5 text-[0.8125rem] font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 sm:px-6 sm:text-sm"
+          class="text-noite-900 hover:bg-noite-100 focus-visible:outline-noite-300 group inline-flex min-h-12 items-center gap-3 rounded-full bg-white py-2 pr-2 pl-6 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
         >
           Ver projetos
-          <Icon name="arrow" class="size-4" />
+          <span
+            class="bg-noite-900 grid size-8 place-items-center rounded-full text-white transition-transform duration-300 group-hover:translate-x-0.5"
+            aria-hidden="true"
+          >
+            <Icon name="arrow" class="size-4" />
+          </span>
         </a>
         <a
           href={`mailto:${SITE.email}`}
-          class="focus-visible:outline-butter-200 inline-flex min-h-12 items-center gap-2 rounded-full border border-white/30 px-4 py-3.5 text-[0.8125rem] font-semibold transition-colors hover:border-white/50 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2 sm:px-6 sm:text-sm"
+          class="focus-visible:outline-noite-300 inline-flex min-h-12 items-center gap-2 rounded-full border border-white/30 px-6 py-3 text-sm font-semibold transition-colors hover:border-white/60 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-offset-2"
           aria-label={`Falar com a gente por e-mail: ${SITE.email}`}
         >
           <Icon name="mail" class="size-4" />
@@ -65,13 +100,27 @@ import { SITE } from '../../consts';
         </a>
       </div>
     </div>
+
+    <div class="min-h-12 flex-1" aria-hidden="true"></div>
+
+    <dl
+      class="bg-white/15 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/20 shadow-[inset_0_1px_0_0_rgb(255_255_255/0.2)] md:grid-cols-4"
+    >
+      {
+        NUMEROS.map((n) => (
+          <div class="bg-noite-950/75 px-5 py-5 sm:px-7 sm:py-6">
+            <dd class="display text-3xl text-white sm:text-4xl">{n.valor}</dd>
+            <dt class="text-noite-200 mt-1.5 text-xs leading-snug sm:text-[0.8125rem]">{n.label}</dt>
+          </div>
+        ))
+      }
+    </dl>
   </div>
 </section>
 
 <style>
   .titulo {
-    font-size: clamp(2.125rem, min(9.5vw, 11vh), 6.5rem);
-    letter-spacing: -0.03em;
-    line-height: 1.08;
+    font-size: clamp(2.125rem, min(9vw, 10.5vh), 6rem);
+    line-height: 1.02;
   }
 </style>
