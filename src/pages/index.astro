@@ -12,7 +12,7 @@ const projetos = (await getCollection('projetos', ({ data }) => !data.draft)).so
   (a, b) => a.data.ordem - b.data.ordem || b.data.ano - a.data.ano,
 );
 
-const destaques = projetos.slice(0, 4);
+const destaques = projetos.slice(0, 6);
 ---
 
 <Layout description={SITE.description} headerSobreposto>
@@ -20,7 +20,7 @@ const destaques = projetos.slice(0, 4);
 
   <section
     id="servicos"
-    class="relative isolate w-full scroll-mt-24 overflow-hidden bg-[linear-gradient(160deg,#16399a,var(--color-noite-700)_60%,#2a62c8)] py-20 text-white sm:py-28 lg:py-32"
+    class="folha secao relative isolate w-full scroll-mt-24 overflow-hidden bg-[linear-gradient(160deg,var(--color-noite-800),var(--color-noite-700)_60%,var(--color-noite-600))] text-white"
   >
     <div class="absolute inset-0 -z-10" aria-hidden="true">
       <div class="absolute -top-40 -left-32 size-[30rem] bg-[radial-gradient(closest-side,rgb(143_184_245/0.32),transparent)]"></div>
@@ -29,7 +29,7 @@ const destaques = projetos.slice(0, 4);
 
     <div class="mx-auto grid max-w-6xl gap-12 px-6 sm:px-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
       <div class="lg:sticky lg:top-28 lg:self-start">
-        <p class="text-noite-100/85 text-sm font-medium">No que trabalhamos</p>
+        <p class="rotulo text-noite-100">01 — No que trabalhamos</p>
         <h2 class="mt-5 text-5xl leading-[1.02] font-bold tracking-[-0.04em] text-balance sm:text-6xl">
           Frentes que destravam um e-commerce
         </h2>
@@ -55,13 +55,13 @@ const destaques = projetos.slice(0, 4);
             <div
               class="group border-b border-white/15 last:border-b-0"
               data-item
-              data-aberto={String(i === 0)}
+              data-aberto="false"
             >
               <h3>
                 <button
                   type="button"
                   id={`servico-${i}`}
-                  aria-expanded={i === 0 ? 'true' : 'false'}
+                  aria-expanded="false"
                   aria-controls={`servico-painel-${i}`}
                   class="flex w-full cursor-pointer touch-manipulation items-center gap-4 py-6 text-left [-webkit-tap-highlight-color:transparent] focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-white"
                 >
@@ -89,7 +89,7 @@ const destaques = projetos.slice(0, 4);
                 id={`servico-painel-${i}`}
                 role="region"
                 aria-labelledby={`servico-${i}`}
-                inert={i !== 0}
+                inert
                 class="grid grid-rows-[0fr] transition-[grid-template-rows] duration-300 group-data-[aberto=true]:grid-rows-[1fr]"
               >
                 <div class="overflow-hidden">
@@ -113,9 +113,10 @@ const destaques = projetos.slice(0, 4);
 
   <section
     id="processo"
-    class="relative isolate w-full scroll-mt-24 overflow-hidden bg-[linear-gradient(165deg,var(--color-noite-950),var(--color-noite-900)_55%,#16399a)] py-20 text-white sm:py-28 lg:py-32"
+    class="folha secao relative isolate w-full scroll-mt-24 overflow-hidden bg-[linear-gradient(165deg,var(--color-noite-950),var(--color-noite-900)_55%,var(--color-noite-800))] text-white"
   >
     <div class="absolute inset-0 -z-10" aria-hidden="true">
+      <div class="grade absolute inset-0 opacity-60"></div>
       <div class="absolute -top-32 -right-24 size-[40rem] bg-[radial-gradient(closest-side,rgb(59_123_224/0.5),transparent)]"></div>
       <div class="absolute -bottom-48 -left-32 size-[34rem] bg-[radial-gradient(closest-side,rgb(29_74_176/0.6),transparent)]"></div>
     </div>
@@ -123,7 +124,7 @@ const destaques = projetos.slice(0, 4);
     <div class="mx-auto max-w-6xl px-6 sm:px-10">
       <div class="grid items-center gap-10 lg:grid-cols-2 lg:gap-6">
         <div>
-          <p class="text-noite-300 text-sm font-medium">Como trabalhamos</p>
+          <p class="rotulo text-noite-300">02 — Como trabalhamos</p>
           <h2 class="mt-5 text-6xl leading-[0.98] font-bold tracking-[-0.04em] sm:text-8xl">
             Entenda.<br />Planeje.<br />Entregue.
           </h2>
@@ -175,12 +176,15 @@ const destaques = projetos.slice(0, 4);
 
   <Depoimentos />
 
-  <section id="stack" class="bg-noite-100 w-full scroll-mt-24 py-16 sm:py-20 lg:py-24">
+  <section
+    id="stack"
+    class="folha bg-noite-100 text-noite-900 w-full scroll-mt-24 pt-16 pb-[calc(4rem+var(--folha))] sm:pt-20 sm:pb-[calc(5rem+var(--folha))]"
+  >
     <div
       class="mx-auto grid max-w-6xl items-center gap-10 px-6 sm:px-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16"
     >
       <div>
-        <p class="text-noite-700 text-sm font-medium">Stack</p>
+        <p class="rotulo text-noite-700">05 — Stack</p>
         <h2 class="text-noite-900 mt-4 text-4xl leading-[1.05] font-bold tracking-[-0.04em] text-balance sm:text-5xl">
           Ferramentas que usamos no dia a dia
         </h2>
@@ -200,16 +204,17 @@ const destaques = projetos.slice(0, 4);
   </section>
 
   <section
-    class="relative isolate w-full overflow-hidden bg-[linear-gradient(165deg,var(--color-noite-950),var(--color-noite-900)_55%,#16399a)] py-20 text-white sm:py-28 lg:py-32"
+    class="folha secao relative isolate w-full overflow-hidden bg-[linear-gradient(165deg,var(--color-noite-950),var(--color-noite-900)_55%,var(--color-noite-800))] text-white"
   >
     <div class="absolute inset-0 -z-10" aria-hidden="true">
+      <div class="grade absolute inset-0 opacity-60"></div>
       <div class="absolute -top-40 -left-24 size-[30rem] bg-[radial-gradient(closest-side,rgb(59_123_224/0.45),transparent)]"></div>
       <div class="absolute -right-24 -bottom-48 size-[30rem] bg-[radial-gradient(closest-side,rgb(29_74_176/0.6),transparent)]"></div>
     </div>
 
     <div class="mx-auto grid max-w-6xl items-center gap-14 px-6 sm:px-10 lg:grid-cols-2 lg:gap-16">
       <div>
-        <p class="text-noite-300 text-sm font-medium">Próximo passo</p>
+        <p class="rotulo text-noite-300">06 — Próximo passo</p>
         <h2 class="mt-5 text-5xl leading-[1] font-bold tracking-[-0.04em] text-balance sm:text-7xl">
           Tem um projeto em mente?
         </h2>
