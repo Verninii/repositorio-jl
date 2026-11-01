@@ -29,16 +29,19 @@ const slides = await Promise.all(
 const total = String(slides.length).padStart(2, '0');
 
 const BOTAO =
-  'border-white/25 text-white hover:border-white/50 hover:bg-white/10 focus-visible:outline-peri-300 grid size-11 place-items-center rounded-full border transition-colors focus-visible:outline-2 focus-visible:outline-offset-2';
+  'border-white/25 text-white hover:border-white/50 hover:bg-white/10 focus-visible:outline-noite-300 grid size-11 place-items-center rounded-full border transition-colors focus-visible:outline-2 focus-visible:outline-offset-2';
 ---
 
-<section id="projetos" class="w-full scroll-mt-24 bg-[#6384c8]">
+<section
+  id="projetos"
+  class="folha bg-noite-600 w-full scroll-mt-24 overflow-hidden pt-16 pb-(--folha) sm:pt-20"
+>
   <NeonReveal
     class="mx-auto max-w-6xl"
     edgeFade="30%"
     config={{
-      backgroundColor: '#6384c8',
-      colors: ['#d7e2ff', '#b5b2e8'],
+      backgroundColor: '#2f6fd6',
+      colors: ['#d7e6ff', '#8fb8f5'],
       forceMode: 'dark',
       trigger: 'inView',
       revealDelay: 150,
@@ -49,9 +52,7 @@ const BOTAO =
     }}
   >
     <div class="text-center">
-      <p class="text-xs font-semibold tracking-widest text-white/50 uppercase">
-        Projetos em destaque
-      </p>
+      <p class="rotulo text-white/85">03 — Projetos em destaque</p>
       <h2 class="display mt-3 text-5xl text-white sm:text-7xl">Resultados reais</h2>
     </div>
 
@@ -88,7 +89,7 @@ const BOTAO =
               <div class="mt-4 flex flex-col items-center gap-4 text-center">
                 <div class="flex h-12 flex-col items-center justify-center" data-caption>
                   <p class="display max-w-full truncate text-xl text-white sm:text-2xl" data-title />
-                  <p class="mt-1 max-w-full truncate text-sm text-white/60" data-subtitle />
+                  <p class="mt-1 max-w-full truncate text-sm text-white/85" data-subtitle />
                 </div>
 
                 <div class="flex items-center gap-4">
@@ -96,7 +97,7 @@ const BOTAO =
                     <Icon name="arrow" class="size-4 rotate-180" />
                   </button>
                   <span
-                    class="min-w-[4.5rem] text-xs font-semibold tracking-widest text-white/60 tabular-nums"
+                    class="min-w-[4.5rem] text-xs font-semibold tracking-widest text-white/85 tabular-nums"
                     data-counter
                   >
                     01 / {total}
@@ -111,13 +112,13 @@ const BOTAO =
             </div>
 
             <div class="mt-10 grid gap-5 sm:grid-cols-2" data-fallback>
-              {projetos.map((projeto, i) => (
-                <ProjectCard projeto={projeto} tom={i % 2 === 0 ? 'creme' : 'branco'} />
+              {projetos.map((projeto) => (
+                <ProjectCard projeto={projeto} />
               ))}
             </div>
           </>
         ) : (
-          <p class="mt-10 text-white/60">
+          <p class="mt-10 text-white/85">
             Nenhum projeto publicado. Adicione um arquivo em <code>src/content/projetos/</code>.
           </p>
         )

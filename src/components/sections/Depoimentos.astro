@@ -13,12 +13,12 @@ const iniciais = (nome: string) => {
 const ESTRELA = 'M12 2.5l2.94 6.1 6.56.86-4.8 4.6 1.2 6.54L12 17.4l-5.9 3.2 1.2-6.54-4.8-4.6 6.56-.86z';
 
 const BOTAO =
-  'group border-glicinia-200/40 text-lima-400 hover:border-lima-400 hover:bg-lima-400 hover:text-glicinia-900 focus-visible:outline-lima-400 grid size-11 place-items-center rounded-full border transition-colors focus-visible:outline-2 focus-visible:outline-offset-2';
+  'group text-white border-white/35 hover:border-white hover:bg-white hover:text-noite-900 focus-visible:outline-white grid size-11 place-items-center rounded-full border transition-colors focus-visible:outline-2 focus-visible:outline-offset-2';
 ---
 
 <section
   id="depoimentos"
-  class="bg-glicinia-700 text-glicinia-200 w-full scroll-mt-24 py-16 sm:py-24"
+  class="folha secao text-noite-100 w-full scroll-mt-24 bg-[linear-gradient(180deg,var(--color-noite-800),var(--color-noite-900))]"
   aria-labelledby="depoimentos-titulo"
   aria-roledescription="carrossel"
   data-carrossel
@@ -26,22 +26,23 @@ const BOTAO =
   <div class="mx-auto max-w-6xl px-8 sm:px-16">
   <h2 id="depoimentos-titulo" class="mx-auto max-w-3xl">
       <span class="sr-only">{ROTULO}</span>
-      <svg viewBox="0 0 800 170" class="text-glicinia-200 block w-full overflow-visible" aria-hidden="true">
+      <svg viewBox="0 0 800 170" class="block w-full overflow-visible text-white" aria-hidden="true">
         <path id="depoimentos-titulo-arco" d="M 30 150 A 950 950 0 0 1 770 150" fill="none" />
         <text
           class="font-display"
+          font-weight="700"
           fill="currentColor"
           font-size="64"
           letter-spacing="-1"
           text-anchor="middle"
         >
-          <textPath href="#depoimentos-titulo-arco" startOffset="50%">{ROTULO.toUpperCase()}</textPath>
+          <textPath href="#depoimentos-titulo-arco" startOffset="50%">{ROTULO}</textPath>
         </text>
       </svg>
     </h2>
 
   <ul
-    class="focus-visible:outline-lima-400 mt-3 flex snap-x snap-mandatory gap-6 overflow-x-auto overscroll-x-contain rounded-[2rem] [scrollbar-width:none] focus-visible:outline-2 focus-visible:outline-offset-4 [&::-webkit-scrollbar]:hidden"
+    class="focus-visible:outline-white mt-3 flex snap-x snap-mandatory gap-6 overflow-x-auto overscroll-x-contain rounded-[2rem] [scrollbar-width:none] focus-visible:outline-2 focus-visible:outline-offset-4 [&::-webkit-scrollbar]:hidden"
     tabindex="0"
     aria-label="Depoimentos de clientes"
     data-trilho
@@ -70,7 +71,7 @@ const BOTAO =
                       class="size-full rounded-full object-cover"
                     />
                   ) : (
-                    <span class="display bg-lima-400 text-glicinia-900 grid size-full place-items-center rounded-full text-3xl">
+                    <span class="display bg-noite-500 text-white grid size-full place-items-center rounded-full text-3xl">
                       {iniciais(depoimento.autor)}
                     </span>
                   )}
@@ -82,7 +83,7 @@ const BOTAO =
                       viewBox="0 0 24 24"
                       class:list={[
                         'estrela absolute top-1/2 left-1/2 -mt-3.5 -ml-3.5 size-7',
-                        estrela < nota ? 'text-lima-400' : 'opacity-20',
+                        estrela < nota ? 'text-sol-300' : 'opacity-20',
                       ]}
                       style={`--k: ${estrela}; transform: rotate(${(estrela - 2) * 30}deg) translateY(-4.4rem)`}
                       fill="currentColor"
@@ -94,19 +95,19 @@ const BOTAO =
                 </span>
               </div>
 
-              <figure class="bg-glicinia-200 text-glicinia-900 -mt-12 flex aspect-square flex-1 flex-col items-center rounded-3xl px-7 pt-[4.25rem] pb-8 text-center transition-shadow duration-300">
+              <figure class="bg-noite-100 text-noite-900 -mt-12 flex aspect-square flex-1 flex-col items-center rounded-3xl px-7 pt-[4.25rem] pb-8 text-center transition-shadow duration-300">
                 <figcaption>
                   <span class="block text-[1.375rem] leading-tight font-semibold tracking-tight">
                     {depoimento.autor}
                   </span>
                   {depoimento.cargo && (
-                    <span class="text-glicinia-900/75 mt-1.5 block text-xs font-medium tracking-wider uppercase">
+                    <span class="text-noite-900/75 mt-1.5 block text-xs font-medium tracking-wider uppercase">
                       {depoimento.cargo}
                     </span>
                   )}
                 </figcaption>
 
-                <span class="linha bg-tronco-600 mt-5 block h-0.5 w-10 rounded-full" aria-hidden="true" />
+                <span class="linha bg-noite-500 mt-5 block h-0.5 w-10 rounded-full" aria-hidden="true" />
 
                 <blockquote class="mt-5 text-pretty">
                   {depoimento.titulo && (
@@ -135,12 +136,12 @@ const BOTAO =
           {DEPOIMENTOS.map((_, i) => (
             <button
               type="button"
-              class="group focus-visible:outline-lima-400 grid h-6 place-items-center rounded-full px-1 focus-visible:outline-2"
+              class="group focus-visible:outline-white grid h-6 place-items-center rounded-full px-1 focus-visible:outline-2"
               aria-label={`Ir para o depoimento ${i + 1}`}
               aria-current={i === 0 ? 'true' : 'false'}
               data-ponto
             >
-              <span class="bg-areia-300/50 group-hover:bg-areia-300 group-aria-[current=true]:bg-lima-400 h-2 w-2 rounded-full transition-all duration-300 group-aria-[current=true]:w-6" />
+              <span class="bg-white/40 group-hover:bg-white/70 group-aria-[current=true]:bg-white h-2 w-2 rounded-full transition-all duration-300 group-aria-[current=true]:w-6" />
             </button>
           ))}
         </div>
