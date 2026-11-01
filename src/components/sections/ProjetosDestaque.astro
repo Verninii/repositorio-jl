@@ -26,10 +26,8 @@ const slides = await Promise.all(
   }),
 );
 
-const total = String(slides.length).padStart(2, '0');
-
 const BOTAO =
-  'border-white/25 text-white hover:border-white/50 hover:bg-white/10 focus-visible:outline-noite-300 grid size-11 place-items-center rounded-full border transition-colors focus-visible:outline-2 focus-visible:outline-offset-2';
+  'group text-white border-white/35 hover:border-white hover:bg-white hover:text-noite-900 focus-visible:outline-white grid size-11 place-items-center rounded-full border transition-colors focus-visible:outline-2 focus-visible:outline-offset-2';
 ---
 
 <section
@@ -86,24 +84,41 @@ const BOTAO =
                 <canvas class="absolute inset-0 block h-full w-full" data-canvas aria-hidden="true" />
               </div>
 
-              <div class="mt-4 flex flex-col items-center gap-4 text-center">
+              <div class="mt-4 text-center">
                 <div class="flex h-12 flex-col items-center justify-center" data-caption>
                   <p class="display max-w-full truncate text-xl text-white sm:text-2xl" data-title />
                   <p class="mt-1 max-w-full truncate text-sm text-white/85" data-subtitle />
                 </div>
 
-                <div class="flex items-center gap-4">
+                <div class="mt-10 flex items-center justify-center gap-4 sm:mt-12">
                   <button type="button" class={BOTAO} aria-label="Projeto anterior" data-prev>
-                    <Icon name="arrow" class="size-4 rotate-180" />
+                    <Icon
+                      name="arrow"
+                      class="size-4 rotate-180 transition-transform group-hover:-translate-x-0.5"
+                    />
                   </button>
-                  <span
-                    class="min-w-[4.5rem] text-xs font-semibold tracking-widest text-white/85 tabular-nums"
-                    data-counter
-                  >
-                    01 / {total}
-                  </span>
+
+                  <div class="flex items-center">
+                    {
+                      slides.map((_, i) => (
+                        <button
+                          type="button"
+                          class="group grid h-6 place-items-center rounded-full px-1 focus-visible:outline-2 focus-visible:outline-white"
+                          aria-label={`Ir para o projeto ${i + 1}`}
+                          aria-current={i === 0 ? 'true' : 'false'}
+                          data-ponto
+                        >
+                          <span class="h-2 w-2 rounded-full bg-white/40 transition-all duration-300 group-hover:bg-white/70 group-aria-[current=true]:w-6 group-aria-[current=true]:bg-white" />
+                        </button>
+                      ))
+                    }
+                  </div>
+
                   <button type="button" class={BOTAO} aria-label="Próximo projeto" data-next>
-                    <Icon name="arrow" class="size-4" />
+                    <Icon
+                      name="arrow"
+                      class="size-4 transition-transform group-hover:translate-x-0.5"
+                    />
                   </button>
                 </div>
               </div>
@@ -152,7 +167,7 @@ const BOTAO =
     const canvas = root.querySelector<HTMLCanvasElement>('[data-canvas]');
     const titleEl = root.querySelector<HTMLElement>('[data-title]');
     const subtitleEl = root.querySelector<HTMLElement>('[data-subtitle]');
-    const counterEl = root.querySelector<HTMLElement>('[data-counter]');
+    const pontos = [...root.querySelectorAll<HTMLButtonElement>('[data-ponto]')];
     const liveEl = root.querySelector<HTMLElement>('[data-live]');
     const captionEl = root.querySelector<HTMLElement>('[data-caption]');
     const prevBtn = root.querySelector<HTMLButtonElement>('[data-prev]');
@@ -194,15 +209,12 @@ const BOTAO =
       palette: null,
     };
 
-    const total = String(slides.length).padStart(2, '0');
-    const pad = (n: number) => String(n + 1).padStart(2, '0');
-
     const renderCaption = (i: number) => {
       const slide = slides[i];
       if (!slide) return;
       if (titleEl) titleEl.textContent = slide.title;
       if (subtitleEl) subtitleEl.textContent = slide.subtitle;
-      if (counterEl) counterEl.textContent = `${pad(i)} / ${total}`;
+      pontos.forEach((ponto, j) => ponto.setAttribute('aria-current', String(j === i)));
       if (liveEl) liveEl.textContent = `Projeto ${i + 1} de ${slides.length}: ${slide.title}`;
       if (captionEl && !reduceMotion.matches) {
         captionEl.animate(
@@ -248,6 +260,7 @@ const BOTAO =
     stage.addEventListener('pointercancel', (e) => engine.pointerUp(e, true));
     stage.addEventListener('pointerleave', () => engine.pointerLeave());
 
+    pontos.forEach((ponto, j) => ponto.addEventListener('click', () => engine.goTo(j)));
     prevBtn?.addEventListener('click', () => engine.previous());
     nextBtn?.addEventListener('click', () => engine.next());
 
