@@ -71,6 +71,13 @@ html {
   overflow-wrap: anywhere;
 }
 
+@layer base {
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
 @layer components {
   .rotulo {
     font-size: 0.75rem;
