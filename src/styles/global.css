@@ -5,16 +5,11 @@
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
 
-  /* Creme — faixas claras. Dessaturado de propósito: o amarelo-manteiga
-     saturado brigava com o periwinkle. Hue quente, saturação baixa. */
   --color-butter-50: #fbf8f2;
   --color-butter-100: #f5f0e6;
   --color-butter-200: #ede7d9;
   --color-butter-300: #dbd2c0;
 
-  /* Azul periwinkle — faixas escuras, títulos sobre creme e CTAs.
-     peri-500 é 5% mais escuro que o azul da referência: no tom original,
-     texto branco sobre a faixa dava 3,87:1 e reprovava em AA. */
   --color-peri-300: #a2afd7;
   --color-peri-400: #7e90c8;
   --color-peri-500: #5b71b9;
@@ -22,28 +17,16 @@
   --color-peri-700: #394a84;
   --color-peri-900: #2c3963;
 
-  /* Passos grandes da escala, fluidos. Só o display usa 4xl+ e, em tamanho
-     fixo, "RESULTADOS" (48px) e "CARREGAM" (60px) ficavam mais largos que a
-     tela no mobile: a palavra não quebra, então empurrava a coluna inteira
-     para fora da margem. Cada piso é o maior tamanho que ainda cabe na
-     largura útil de uma tela de 320px, e cada clamp reencosta no valor
-     original já em 480px — de `sm` para cima nada muda de tamanho. */
   --text-4xl: clamp(1.875rem, 7.5vw, 2.25rem);
   --text-5xl: clamp(2.0625rem, 10vw, 3rem);
   --text-6xl: clamp(2.5rem, 12.5vw, 3.75rem);
   --text-7xl: clamp(3rem, 15vw, 4.5rem);
-  /* Teto de 5.5rem e não 6rem: a 96px "CARREGAM" ocupava os ~554px da coluna
-     do hero por inteiro, sem folga para a margem lateral da página. */
   --text-8xl: clamp(3.5rem, 18.33vw, 5.5rem);
 
-  /* Texto. */
   --color-ink-900: #16161a;
   --color-ink-700: #3a3a42;
   --color-ink-500: #676771;
 
-  /* Paleta do rodapé e da seção "Nosso processo": azul-escuro, bege amarelado
-     e azul-claro. Contrastes (WCAG): bege sobre azul 12:1; azul-claro sobre
-     azul 7,7:1; azul a 75% sobre bege 5,8:1. */
   --font-serif: var(--font-playfair), ui-serif, Georgia, serif;
   --color-sol-100: #fff7d6;
   --color-sol-200: #fff2b2;
@@ -55,9 +38,6 @@
   --color-bege: var(--color-sol-200);
   --color-azul-claro: var(--color-ceu-300);
 
-  /* Azul-noite — seção "processo" e CTA final: fundo azul profundo com
-     brilhos difusos, cartões de vidro fosco (branco a 10% + blur) e botões
-     brancos em pílula. noite-100/200 são os campos claros do cartão branco. */
   --color-noite-100: #e9f0fd;
   --color-noite-200: #d3e2fa;
   --color-noite-300: #8fb8f5;
@@ -66,8 +46,6 @@
   --color-noite-900: #0b1e4a;
   --color-noite-950: #071433;
 
-  /* Paleta dos depoimentos (árvore em flor). O glicinia-900 não vem da
-     referência: é um azul bem escuro só p/ o texto sobre o azul-claro. */
   --color-glicinia-900: #0f2b57;
   --color-glicinia-700: #2961b1;
   --color-glicinia-500: #64a8e5;
@@ -82,36 +60,20 @@ html {
   scrollbar-gutter: stable;
 }
 
-/* Display da referência: pesado, caixa alta, bem apertado. */
 .display {
   font-family: var(--font-display);
   text-transform: uppercase;
   letter-spacing: -0.02em;
-  /* 1.12 e não menos: acentos do português (Á, Ó, Ê) colidem com a linha
-     anterior em valores mais apertados. */
   line-height: 1.12;
-  /* Rede de segurança: título com palavra longa demais para a linha quebra
-     dentro da caixa em vez de furar a margem (ex.: o overlay do ProjectCard
-     em telas de 320px). Precisa ser `anywhere`, que também encolhe o
-     min-content do texto — do contrário a caixa de largura fixa continua
-     sendo furada. As colunas fr arbitrárias que usam .display (hero,
-     Frentes) já têm minmax(0, …) para não herdar esse min-content menor
-     como piso da trilha do grid. */
   overflow-wrap: anywhere;
 }
 
-/* Em @layer components para que utilitários (leading-*, tracking-*) aplicados
-   junto consigam sobrescrever estes padrões. */
 @layer components {
-  /* Títulos serifados do rodapé e do "Nosso processo": Playfair Display 500,
-     caixa normal. Itálico (<em>) destaca a palavra-chave. */
   .display-serif {
     font-family: var(--font-serif);
     font-weight: 500;
     letter-spacing: -0.02em;
     line-height: 1.05;
-    /* A Playfair usa algarismos de estilo antigo por padrão; alinhados ficam
-       corretos em números e siglas. */
     font-variant-numeric: lining-nums;
     overflow-wrap: anywhere;
   }
@@ -120,7 +82,6 @@ html {
     font-weight: 500;
   }
 
-  /* Rótulo de seção no estilo portfólio: "(04) — Como trabalhamos". */
   .rotulo {
     font-size: 0.75rem;
     font-weight: 600;
@@ -129,7 +90,6 @@ html {
   }
 }
 
-/* Faixa full-width: a cor vai de ponta a ponta, o conteúdo fica contido. */
 .faixa {
   width: 100%;
 }
@@ -144,7 +104,6 @@ html {
   }
 }
 
-/* Respeita quem pediu menos movimento. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

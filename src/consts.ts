@@ -1,8 +1,3 @@
-// Dados usados pelo SEO e pelo conteúdo fixo do site.
-// TODO: "Órbita" é um nome de placeholder — troque por sua marca real.
-// TODO: troque também SITE.url e SITE.links pelos dados reais
-// antes do primeiro deploy — canonical, Open Graph, sitemap e contato
-// dependem deles.
 import type { ImageMetadata } from 'astro';
 
 export const SITE = {
@@ -13,7 +8,6 @@ export const SITE = {
   description:
     'Estúdio de desenvolvimento focado em e-commerce. Construímos lojas Shopify rápidas, sites institucionais e integrações sob medida para marcas brasileiras.',
   email: 'juansimao5@gmail.com',
-  /** `exibicao` é o que aparece na tela; `link` vai no href (tel:). */
   telefone: { exibicao: '(11) 97231-6191', link: 'tel:+5511972316191' },
   lang: 'pt-BR',
   locale: 'pt_BR',
@@ -24,7 +18,6 @@ export const SITE = {
   ],
 } as const;
 
-/** Números exibidos no hero. */
 export const NUMEROS = [
   { valor: '6+', label: 'anos de experiência no time' },
   { valor: '30+', label: 'projetos entregues' },
@@ -32,7 +25,6 @@ export const NUMEROS = [
   { valor: '100%', label: 'código próprio' },
 ] as const;
 
-/** Frentes de atuação — lista com ícone, no estilo da referência. */
 export const SERVICOS = [
   {
     icone: 'cart',
@@ -66,7 +58,6 @@ export const SERVICOS = [
   },
 ] as const;
 
-/** Etapas do processo — blocos 01 a 04. */
 export const PROCESSO = [
   {
     titulo: 'Diagnóstico',
@@ -87,18 +78,13 @@ export const PROCESSO = [
 ] as const;
 
 export type Depoimento = {
-  /** Frase curta de destaque, aparece em negrito acima do texto */
   titulo?: string;
   texto: string;
   autor: string;
   cargo?: string;
-  /** Nota de 1 a 5 (padrão 5) */
   nota?: number;
-  /** Foto de src/assets. Sem foto, mostra as iniciais */
   foto?: ImageMetadata;
 };
-/** Depoimentos de clientes.
- * TODO: confirmar c/ cada cliente (texto e nome) antes de publicar. */
 export const DEPOIMENTOS: readonly Depoimento[] = [
   {
     titulo: 'Parceria de alto nível.',
@@ -125,7 +111,6 @@ export const DEPOIMENTOS: readonly Depoimento[] = [
   },
 ];
 
-/** Tecnologias exibidas na home. */
 export const STACK = [
   'Shopify',
   'Liquid',
@@ -139,7 +124,6 @@ export const STACK = [
   'Vite',
 ] as const;
 
-/** Marcas atendidas — faixa "confiam na gente". TODO: troque por clientes reais. */
 export const CLIENTES = [
   'Unic Pharma',
   'Scentinela',
@@ -148,7 +132,6 @@ export const CLIENTES = [
   'Casa Lumen',
 ] as const;
 
-/** Filtros da galeria de projetos. O valor casa com `tipo` no frontmatter. */
 export const FILTROS = [
   { valor: 'todos', label: 'Todos' },
   { valor: 'E-commerce Shopify', label: 'Shopify' },
@@ -156,7 +139,6 @@ export const FILTROS = [
   { valor: 'Plataforma B2B', label: 'B2B' },
 ] as const;
 
-/** Números com ícone da faixa azul abaixo das frentes de atuação. */
 export const DESTAQUES = [
   { icone: 'cart', valor: '30+', label: 'lojas no ar' },
   { icone: 'bolt', valor: '150+', label: 'entregas de performance' },

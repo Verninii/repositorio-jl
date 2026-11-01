@@ -5,41 +5,30 @@ import ProjectCard from '../ProjectCard.astro';
 import { FILTROS } from '../../consts';
 
 interface Props {
-  /** Projetos já ordenados/filtrados pela página que monta a seção. */
   projetos?: CollectionEntry<'projetos'>[];
 }
 
 const { projetos = [] } = Astro.props;
 
-// Só entra na barra o filtro que tem projeto correspondente: botão que nunca
-// devolve resultado é ruído. `valor` casa exatamente com `tipo` do frontmatter.
 const tipos = new Set(projetos.map((projeto) => projeto.data.tipo));
 const filtros = FILTROS.filter((filtro) => filtro.valor === 'todos' || tipos.has(filtro.valor));
-// Com um só tipo publicado a barra vira decoração — nesse caso não renderiza.
 const mostrarFiltros = filtros.length > 2;
 
-// Fonte única das classes de estado: o frontmatter pinta o HTML inicial e o
-// script recebe as mesmas strings via define:vars. Ficam como literais para o
-// Tailwind conseguir enxergá-las na varredura do arquivo.
 const PILULA_BASE =
   'inline-flex min-h-11 items-center rounded-full border px-5 py-2.5 text-sm font-semibold transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-butter-200 focus-visible:ring-offset-2 focus-visible:ring-offset-peri-500 focus-visible:outline-hidden';
 const PILULA_ATIVA = 'border-butter-200 bg-butter-200 text-ink-900';
-// border-white/70 e não /30: abaixo de 3:1 a borda do botão some sobre o azul.
 const PILULA_INATIVA = 'border-white/70 text-white hover:bg-white/10';
 
 const classesPilula = (ativa: boolean) =>
   [PILULA_BASE, ativa ? PILULA_ATIVA : PILULA_INATIVA].join(' ');
 ---
 
-<!-- PROJETOS — faixa azul full width: cabeçalho centralizado, filtros em pílula e grade de cards. -->
-<!-- scroll-mt compensa o header sticky (h-16 / sm:h-20) quando alguém chega pelo #projetos. -->
 <section
   id="projetos"
   aria-labelledby="projetos-titulo"
   class="bg-peri-500 w-full scroll-mt-16 py-20 sm:scroll-mt-20 sm:py-28"
 >
   <div class="mx-auto max-w-7xl px-6 sm:px-10">
-    <!-- Cabeçalho editorial centralizado. -->
     <div class="mx-auto max-w-3xl text-center">
       <p class="text-butter-200 text-xs font-semibold tracking-[0.32em] uppercase sm:text-sm">
         Portfólio
@@ -55,7 +44,6 @@ const classesPilula = (ativa: boolean) =>
       </p>
     </div>
 
-    <!-- Barra de filtros: alterna a visibilidade dos cards por `tipo`. -->
     {
       mostrarFiltros && (
         <div
@@ -78,7 +66,6 @@ const classesPilula = (ativa: boolean) =>
       )
     }
 
-    <!-- Grade: 1 coluna no mobile, 2 no desktop. O tom alterna creme/branco. -->
     {
       projetos.length > 0 ? (
         <div class="mt-10 grid grid-cols-1 gap-6 sm:mt-12 sm:gap-8 lg:grid-cols-2" data-grade>
@@ -95,8 +82,6 @@ const classesPilula = (ativa: boolean) =>
       )
     }
 
-    <!-- Aviso exibido pelo script quando um filtro não tem projeto. role=status
-         faz o leitor de tela anunciar a troca, que é puramente visual. -->
     <p class="mt-10 text-center text-base text-white" role="status" data-vazio hidden>
       Nenhum projeto nesta categoria por enquanto.
     </p>
@@ -114,8 +99,6 @@ const classesPilula = (ativa: boolean) =>
 </section>
 
 <style>
-  /* Rede de segurança: garante que o atributo `hidden` vença o display dos
-     wrappers da grade mesmo se o preflight do Tailwind mudar. */
   [data-projeto][hidden],
   [data-vazio][hidden] {
     display: none;

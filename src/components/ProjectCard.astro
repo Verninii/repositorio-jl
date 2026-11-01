@@ -6,7 +6,6 @@ import scentine from '../assets/scentine.jpg';
 
 interface Props {
   projeto: CollectionEntry<'projetos'>;
-  /** Variante do bloco — alterna creme e branco na grade. */
   tom?: 'creme' | 'branco';
 }
 
@@ -22,8 +21,6 @@ const href = `/projetos/${projeto.id}`;
   ]}
 >
   <a href={href} class="flex h-full flex-col focus:outline-none">
-    <!-- Ainda sem screenshot dos projetos: usa a arte de placeholder. Quando o
-         projeto tiver `capa` no frontmatter, ela substitui automaticamente. -->
     <div class="relative m-3 aspect-[16/10] overflow-hidden rounded-2xl">
       <Image
         src={data.capa ?? scentine}
@@ -53,7 +50,6 @@ const href = `/projetos/${projeto.id}`;
       </p>
 
       <h3 class="display mt-2.5 text-2xl">
-        <!-- Link estendido: o card inteiro é clicável, mas só um link no DOM. -->
         <span class="after:absolute after:inset-0 after:content-['']">{data.title}</span>
       </h3>
 

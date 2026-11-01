@@ -1,17 +1,14 @@
 ---
 import { PROCESSO, DEPOIMENTOS } from '../../consts';
 
-// Etapas numeradas 01..04 — o número sai do índice para não duplicar dado em consts.
 const etapas = PROCESSO.map((etapa, i) => ({
   ...etapa,
   numero: String(i + 1).padStart(2, '0'),
 }));
 ---
 
-<!-- PROVA — faixa creme full width com duas partes empilhadas: processo e depoimentos. -->
 <section id="processo" class="bg-butter-200 w-full py-20 sm:py-28">
   <div class="mx-auto max-w-7xl px-6 sm:px-10">
-    <!-- PARTE 1 — PROCESSO -->
     <div class="border-ink-900/15 border-b pb-5">
       <p class="text-ink-500 text-[0.7rem] font-semibold tracking-[0.32em] uppercase sm:text-xs">
         Como trabalhamos
@@ -47,7 +44,6 @@ const etapas = PROCESSO.map((etapa, i) => ({
       }
     </ol>
 
-    <!-- PARTE 2 — DEPOIMENTOS -->
     <div class="border-ink-900/15 mt-24 border-t pt-16 sm:mt-32 sm:pt-20">
       <h2 class="display text-peri-500 text-5xl sm:text-7xl lg:text-8xl">O que dizem</h2>
 

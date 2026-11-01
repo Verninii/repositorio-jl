@@ -3,11 +3,8 @@ import { Image } from 'astro:assets';
 import Icon from '../Icon.astro';
 import { DEPOIMENTOS } from '../../consts';
 
-// Título da seção
 const ROTULO = 'O que dizem de nós';
 
-// "Ana Paula Souza" vira "AS" (1ª letra do 1º e do último nome).
-// Pula título tipo "Dr." / "Dra." p/ "Dr. Eduardo Vasconcelos" virar "EV".
 const iniciais = (nome: string) => {
   const partes = nome.trim().split(/\s+/).filter((parte) => !parte.endsWith('.'));
   return (partes[0][0] + (partes.length > 1 ? partes.at(-1)![0] : '')).toUpperCase();
@@ -19,11 +16,6 @@ const BOTAO =
   'group border-glicinia-200/40 text-lima-400 hover:border-lima-400 hover:bg-lima-400 hover:text-glicinia-900 focus-visible:outline-lima-400 grid size-11 place-items-center rounded-full border transition-colors focus-visible:outline-2 focus-visible:outline-offset-2';
 ---
 
-<!-- DEPOIMENTOS
-     Fundo azul, cards quadrados claros, foto na borda de cima c/ as estrelas
-     em volta. 1 card no celular, 2 no tablet, 3 no desktop.
-     Dá pra arrastar mesmo sem JS; o script só liga o loop, o autoplay, as
-     setas, os pontinhos e a animação de entrada. -->
 <section
   id="depoimentos"
   class="bg-glicinia-700 text-glicinia-200 w-full scroll-mt-24 py-16 sm:py-24"
@@ -34,8 +26,6 @@ const BOTAO =
   <div class="mx-auto max-w-6xl px-8 sm:px-16">
   <h2 id="depoimentos-titulo" class="mx-auto max-w-3xl">
       <span class="sr-only">{ROTULO}</span>
-      {/* Título curvo: o texto segue um arco leve de ponta a ponta.
-          O svg escala c/ a largura, então a curva acompanha qualquer tela. */}
       <svg viewBox="0 0 800 170" class="text-glicinia-200 block w-full overflow-visible" aria-hidden="true">
         <path id="depoimentos-titulo-arco" d="M 30 150 A 950 950 0 0 1 770 150" fill="none" />
         <text
@@ -86,8 +76,6 @@ const BOTAO =
                   )}
                 </div>
 
-                {/* Estrelas em volta da foto: cada uma gira a partir do centro e
-                    é empurrada pra fora. 5 estrelas, de 30° em 30°. */}
                 <span role="img" aria-label={`Nota ${nota} de 5`}>
                   {Array.from({ length: 5 }, (_, estrela) => (
                     <svg
@@ -168,10 +156,6 @@ const BOTAO =
 </section>
 
 <style>
-  /* Entrada da seção (qdo aparece na tela): card sobe, foto cresce,
-     estrelas pipocam uma a uma e o traço se desenha. Cada card entra 120ms
-     depois do anterior. Só roda c/ JS e s/ "reduzir movimento"; fora disso
-     tá tudo já no lugar. */
   .slide {
     --atraso: calc(var(--i) * 120ms);
     --suave: cubic-bezier(0.22, 1, 0.36, 1);
@@ -215,8 +199,6 @@ const BOTAO =
     scale: 0 1;
   }
 
-  /* Estrelas piscando em onda, da 1ª à última, depois da entrada.
-     Só p/ quem não pediu "reduzir movimento". */
   @media (prefers-reduced-motion: no-preference) {
     .brilho {
       transform-box: fill-box;
@@ -237,7 +219,6 @@ const BOTAO =
     }
   }
 
-  /* Hover (só c/ mouse): o card sobe um pouquinho */
   @media (hover: hover) {
     .cartao:hover {
       translate: 0 -0.375rem;
@@ -250,11 +231,9 @@ const BOTAO =
 
 <script>
   const reduzirMovimento = matchMedia('(prefers-reduced-motion: reduce)');
-  // Tempo parado antes de girar sozinho
   const INTERVALO = 6000;
 
   for (const raiz of document.querySelectorAll<HTMLElement>('[data-carrossel]')) {
-    // Entrada: espera a seção aparecer e roda 1 vez só
     if (!reduzirMovimento.matches) {
       raiz.dataset.animar = '';
       const observador = new IntersectionObserver(
@@ -278,21 +257,14 @@ const BOTAO =
     const total = trilho.children.length;
     const slideEm = (i: number) => trilho.children[i] as HTMLElement;
 
-    // Distância de um card até o próximo (largura + espaço).
-    // Muda c/ o tamanho da tela, então mede sempre.
     const passo = () =>
       slideEm(1).getBoundingClientRect().left - slideEm(0).getBoundingClientRect().left;
-    // Margem de 2px: o snap às vezes para um tiquinho antes
     const chegou = (destino: number) => Math.abs(trilho.scrollLeft - destino) < 2;
-    // Quantos cards cabem na tela: 1, 2 ou 3
     const porVez = () => Math.round(trilho.clientWidth / passo());
     const navegavel = () => total > porVez();
     const atual = () => Math.round(trilho.scrollLeft / passo());
     const ativo = () => Number(slideEm(atual()).dataset.indice);
 
-    // Loop infinito: troca os cards de ponta e ajusta a rolagem junto,
-    // então não pula nada na tela. n > 0 manda os primeiros pro fim;
-    // n < 0 traz os últimos pro começo.
     const girar = (n: number) => {
       if (!n) return;
       const largura = passo();
@@ -305,7 +277,6 @@ const BOTAO =
       trilho.style.scrollSnapType = '';
     };
 
-    // Deixa folga dos 2 lados p/ dar pra arrastar pra qualquer direção
     const normalizar = () => {
       const folga = total - porVez();
       if (folga < 1) return;
@@ -318,12 +289,9 @@ const BOTAO =
       pontos.forEach((ponto, j) => ponto.setAttribute('aria-current', String(j === i)));
     };
 
-    // Rolagem (setas, pontos ou autoplay) que ainda não terminou
     let pendente: { destino: number; fim: () => void } | undefined;
     let andando = false;
 
-    // Detecta qdo a rolagem acabou (dedo, roda ou seta).
-    // Sem o evento nativo, espera 150ms parado.
     let espera: ReturnType<typeof setTimeout> | undefined;
     const parou = () => {
       if (pendente) {
@@ -354,13 +322,11 @@ const BOTAO =
           pendente = undefined;
           resolver();
         };
-        // Plano B: se o dedo atrapalhar, libera após 2s
         const seguranca = setTimeout(fim, 2000);
         pendente = { destino, fim };
         trilho.scrollTo({ left: destino, behavior: reduzirMovimento.matches ? 'auto' : 'smooth' });
       });
 
-    // Anda 1 card; se acabou o espaço, gira o trilho antes
     const avancar = async (sentido: 1 | -1) => {
       const maximo = total - porVez();
       const c = atual();
@@ -379,9 +345,6 @@ const BOTAO =
       agendar();
     };
 
-    // Autoplay. Pausa c/ mouse em cima, foco do teclado, dedo na tela,
-    // seção fora da tela ou aba escondida. Quem pediu "reduzir movimento"
-    // não tem autoplay (usa só setas e pontos).
     const motivos = new Set<string>();
     let timer: ReturnType<typeof setTimeout> | undefined;
 
@@ -398,7 +361,6 @@ const BOTAO =
 
     raiz.addEventListener('pointerenter', (e) => e.pointerType === 'mouse' && segurar('mouse', true));
     raiz.addEventListener('pointerleave', (e) => e.pointerType === 'mouse' && segurar('mouse', false));
-    // Só foco de teclado (clique tb foca o botão e travaria o autoplay)
     raiz.addEventListener('focusin', (e) => {
       if ((e.target as HTMLElement).matches(':focus-visible')) segurar('foco', true);
     });
@@ -413,7 +375,6 @@ const BOTAO =
 
     anterior.addEventListener('click', () => andar(-1));
     proximo.addEventListener('click', () => andar(1));
-    // Vai pelo caminho mais curto (do 1 pro 4 volta 1, não avança 3)
     pontos.forEach((ponto, j) =>
       ponto.addEventListener('click', () => {
         let cards = (((j - ativo()) % total) + total) % total;

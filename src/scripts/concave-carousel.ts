@@ -1,24 +1,8 @@
-/**
- * Motor do carrossel côncavo (parede curva em WebGL2).
- *
- * Portado para vanilla a partir de um componente React: só o invólucro era
- * React — este motor sempre foi JS puro. Ele cuida de GL, física (arrasto,
- * inércia, mola, autoplay), hit-test e desenho; quem usa fornece a config via
- * `getConfig()` a cada frame e recebe `onActive`/`onSelect` de volta. A camada
- * de DOM/UX fica no componente .astro (ver ProjetosDestaque.astro).
- *
- * Sem dependências. WebGL2 obrigatório: se não houver, `createConcaveEngine`
- * devolve `null` e o chamador mantém o fallback acessível no DOM.
- */
-
 export type ConcaveAutoplay = 'drift' | 'step' | 'off';
 
 export interface ConcavePalette {
-  /** Cor de fundo resolvida (0..1, RGBA). */
   bg: [number, number, number, number];
-  /** Cor do painel enquanto a textura não carregou. */
   placeholder: [number, number, number, number];
-  /** Cor de texto derivada, como string "r g b" para a var --cc-fg. */
   fg: string;
 }
 
@@ -71,11 +55,7 @@ export interface ConcaveEngine {
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
 
-/** Módulo sempre positivo (−1 mod 4 = 3). */
 const mod = (value: number, size: number) => ((value % size) + size) % size;
-
-// ─── Leitura de cor ────────────────────────────────────────────────────────
-// Um canvas 1x1 resolve qualquer cor CSS (nome, var, hex, rgb) para RGBA 0..1.
 
 let probeCtx: CanvasRenderingContext2D | null = null;
 
@@ -94,11 +74,6 @@ function parseColor(css: string): [number, number, number, number] {
   return [d[0] / 255, d[1] / 255, d[2] / 255, d[3] / 255];
 }
 
-/**
- * Deriva a paleta a partir do fundo pedido e da cor de texto herdada do host.
- * Fundo transparente → placeholder é a cor de texto a 8% e as bordas somem
- * (o fundo real da seção aparece atrás do canvas).
- */
 export function readPalette(host: HTMLElement, backgroundColor: string): ConcavePalette {
   const probe = document.createElement('span');
   probe.style.cssText =
@@ -127,21 +102,19 @@ export function readPalette(host: HTMLElement, backgroundColor: string): Concave
   };
 }
 
-// ─── Shaders ─────────────────────────────────────────────────────────────────
-
 const VERT = `#version 300 es
 precision highp float;
 in vec2 aUv;
-uniform float uS;        // arc position of the panel centre (world units)
-uniform vec2  uSize;     // panel width, height
-uniform float uKappa;    // curvature = 1 / radius (0 = flat)
-uniform float uDist;     // camera distance from the centred panel
-uniform vec2  uTilt;     // cos, sin of pitch
+uniform float uS;
+uniform vec2  uSize;
+uniform float uKappa;
+uniform float uDist;
+uniform vec2  uTilt;
 uniform float uFocal;
-uniform float uAspect;   // canvas width / height
-uniform float uYShift;   // vertical offset in NDC
-uniform float uMirror;   // 1 = floor reflection pass
-uniform float uFloor;    // gap between wall and floor
+uniform float uAspect;
+uniform float uYShift;
+uniform float uMirror;
+uniform float uFloor;
 out vec2 vUv;
 out vec2 vLocal;
 out float vNdcX;
@@ -155,7 +128,7 @@ void main() {
   if (uKappa > 1e-5) {
     float r = 1.0 / uKappa;
     float th = s * uKappa;
-    p = vec3(r * sin(th), y, r * (1.0 - cos(th)));  // bends toward the viewer
+    p = vec3(r * sin(th), y, r * (1.0 - cos(th)));
   }
   vec3 q = vec3(p.x, p.y * uTilt.x - p.z * uTilt.y, p.y * uTilt.y + p.z * uTilt.x);
   float depth = uDist - q.z;
@@ -216,7 +189,6 @@ const UNIFORMS = [
   'uPlaceholder', 'uBg', 'uDim', 'uReflection',
 ] as const;
 
-/** TEXTURE_MAX_ANISOTROPY_EXT — a constante não existe no tipo padrão do GL. */
 const TEXTURE_MAX_ANISOTROPY_EXT = 0x84fe;
 
 interface GLCtx {
@@ -258,8 +230,6 @@ function initGL(canvas: HTMLCanvasElement): GLCtx | null {
     throw new Error(gl.getProgramInfoLog(program) ?? 'program link failed');
   }
 
-  // Tira de quads ao longo da largura do painel: curvar a parede precisa de
-  // subdivisão, uma só face não dobra.
   const segments = 48;
   const verts = new Float32Array((segments + 1) * 4);
   for (let i = 0; i <= segments; i++) verts.set([i / segments, 0, i / segments, 1], i * 4);
@@ -376,10 +346,6 @@ interface HitResult {
   s: number; y: number; index: number; inBand: boolean; inside: boolean;
 }
 
-/**
- * Cria o motor ligado a um `<canvas>` e a um `host` (que recebe os eventos de
- * ponteiro/roda e é medido pelo ResizeObserver). Devolve `null` sem WebGL2.
- */
 export function createConcaveEngine(
   canvas: HTMLCanvasElement,
   host: HTMLElement,
@@ -487,9 +453,6 @@ export function createConcaveEngine(
   });
   intersectionObserver.observe(host);
 
-  // Projeta o ponto da tela de volta para a parede: resolve qual painel (e qual
-  // posição dentro dele) está sob o cursor. Reta no caso plano; interseção
-  // raio-cilindro quando curvo.
   function hitTest(clientX: number, clientY: number): HitResult | null {
     const cfg = cb.getConfig();
     if (!geom || !cfg.count) return null;
@@ -584,7 +547,6 @@ export function createConcaveEngine(
       try {
         host.setPointerCapture(e.pointerId);
       } catch {
-        /* ignora */
       }
       state.drag = { grabbed: hit.s + state.pos * geom.P, samples: [{ t: performance.now(), p: state.pos }] };
       state.mode = 'drag';
@@ -618,11 +580,9 @@ export function createConcaveEngine(
     try {
       host.releasePointerCapture(e.pointerId);
     } catch {
-      /* ignora */
     }
     const cfg = cb.getConfig();
     if (!press.moved && !cancel) {
-      // Clique, não arrasto: seleciona o painel central, ou gira até o clicado.
       state.drag = null;
       const hit = hitTest(e.clientX, e.clientY);
       const prev = press.prevMode === 'spring' ? press.prevTarget : Math.round(state.pos);
@@ -646,7 +606,6 @@ export function createConcaveEngine(
       return;
     }
     if (state.drag) {
-      // Solta com velocidade: calcula o arremesso pelas amostras recentes.
       const samples = state.drag.samples;
       const first = samples[0];
       const last = samples[samples.length - 1];
@@ -695,7 +654,6 @@ export function createConcaveEngine(
   };
   host.addEventListener('wheel', onWheel, { passive: false });
 
-  // Integra a física do frame conforme o modo atual.
   function advance(dt: number, cfg: ConcaveConfig): void {
     const autoplay = cfg.autoplay !== 'off' && !cfg.paused && !cfg.reducedMotion;
     const hoverPaused = cfg.pauseOnHover && state.hovering;
@@ -742,7 +700,6 @@ export function createConcaveEngine(
             springTo(Math.round(state.pos) + (cfg.speed < 0 ? -1 : 1));
           }
         }
-        // Mantém `pos` perto de zero para não perder precisão com o tempo.
         if (Math.abs(state.pos) > 1e4 && cfg.count) {
           const wraps = Math.round(state.pos / cfg.count) * cfg.count;
           state.pos -= wraps;
@@ -753,8 +710,6 @@ export function createConcaveEngine(
     }
   }
 
-  // Desenha a parede. Devolve true se alguma textura ainda está surgindo
-  // (fade-in), para o loop se manter ativo até terminar.
   function render(cfg: ConcaveConfig, now: number): boolean {
     if (!ctx || !geom || !cfg.palette) return false;
     const { gl, u } = ctx;
@@ -795,7 +750,6 @@ export function createConcaveEngine(
       if (g.kappa > 1e-5 && Math.abs(sc * g.kappa) > Math.PI * 0.96) continue;
       panels.push({ i, sc });
     }
-    // Desenha dos extremos para o centro, para o painel central ficar por cima.
     panels.sort((a, b) => Math.abs(a.sc) - Math.abs(b.sc));
 
     let fadingIn = false;

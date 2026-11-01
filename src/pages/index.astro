@@ -18,12 +18,6 @@ const destaques = projetos.slice(0, 4);
 <Layout description={SITE.description} headerSobreposto>
   <Hero />
 
-  <!-- SERVIÇOS — faixa de ponta a ponta (fora do contêiner max-w-6xl); título à esquerda e, à direita, um painel de vidro com os
-       serviços num acordeão (botão + aria-expanded, só um aberto por vez; o
-       script no fim do arquivo troca o estado — não usa <details> porque o
-       toque no celular não abria em todos os navegadores). O primeiro já vem
-       aberto, então o conteúdo aparece mesmo sem interagir. O painel é azul-escuro
-       translúcido (não branco) para o texto branco manter contraste. -->
   <section
     id="servicos"
     class="relative isolate w-full scroll-mt-24 overflow-hidden bg-[linear-gradient(160deg,#16399a,var(--color-noite-700)_60%,#2a62c8)] py-20 text-white sm:py-28 lg:py-32"
@@ -117,11 +111,6 @@ const destaques = projetos.slice(0, 4);
     </div>
   </section>
 
-  <!-- PROCESSO — vidro fosco sobre azul-noite (referência: layout 3D em azul).
-       Fundo com brilhos difusos (blur), título gigante em três frases curtas,
-       cidade isométrica em SVG à direita e as quatro etapas como cartões de
-       vidro (branco a 10% + backdrop-blur + brilho no topo). Os brilhos ficam
-       longe dos cartões para o texto branco manter contraste. -->
   <section
     id="processo"
     class="relative isolate w-full scroll-mt-24 overflow-hidden bg-[linear-gradient(165deg,var(--color-noite-950),var(--color-noite-900)_55%,#16399a)] py-20 text-white sm:py-28 lg:py-32"
@@ -186,9 +175,6 @@ const destaques = projetos.slice(0, 4);
 
   <Depoimentos />
 
-  <!-- STACK — faixa de ponta a ponta em azul bem claro (separa o azul dos
-       depoimentos do bloco escuro do CTA). Cada tecnologia é uma pílula branca
-       com ponto azul; o hover inverte para azul-noite. Sem animação. -->
   <section id="stack" class="bg-noite-100 w-full scroll-mt-24 py-16 sm:py-20 lg:py-24">
     <div
       class="mx-auto grid max-w-6xl items-center gap-10 px-6 sm:px-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16"
@@ -213,11 +199,6 @@ const destaques = projetos.slice(0, 4);
     </div>
   </section>
 
-  <!-- CTA — faixa de ponta a ponta, mesmo vidro azul-noite. À esquerda, uma
-       conversa em dois balões de fala (o seu convite, branco, e a nossa
-       resposta, azul, com o rabo do lado oposto); à direita, o cartão branco
-       de contato. Os campos são links reais (e-mail e telefone) — não há
-       backend de formulário. -->
   <section
     class="relative isolate w-full overflow-hidden bg-[linear-gradient(165deg,var(--color-noite-950),var(--color-noite-900)_55%,#16399a)] py-20 text-white sm:py-28 lg:py-32"
   >
@@ -336,9 +317,6 @@ const destaques = projetos.slice(0, 4);
 </script>
 
 <style>
-  /* Roda em torno do centro do viewBox (200x200 → 100,100). transform-box:
-     view-box ancora a origem no sistema de coordenadas do SVG, não na
-     bounding box do próprio <g> — sem isso a órbita fica descentralizada. */
   .orbita-ponto {
     transform-box: view-box;
     transform-origin: 100px 100px;

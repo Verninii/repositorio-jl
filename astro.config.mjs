@@ -7,14 +7,11 @@ import mdx from '@astrojs/mdx';
 
 import { SITE } from './src/consts';
 
-// https://astro.build/config
 export default defineConfig({
-  // `site` é obrigatório para canonical, Open Graph e sitemap.
   site: SITE.url,
   trailingSlash: 'never',
   prefetch: { prefetchAll: true, defaultStrategy: 'viewport' },
 
-  // Fontes self-hosted: sem request para o Google, sem layout shift.
   fonts: [
     {
       provider: fontProviders.google(),
@@ -31,7 +28,6 @@ export default defineConfig({
       subsets: ['latin'],
     },
     {
-      // Serifada do rodapé e da seção "Nosso processo" (classe .display-serif).
       provider: fontProviders.google(),
       name: 'Playfair Display',
       cssVariable: '--font-playfair',

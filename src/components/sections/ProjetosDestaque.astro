@@ -7,14 +7,11 @@ import Icon from '../Icon.astro';
 import NeonReveal from '../NeonReveal.astro';
 
 interface Props {
-  /** Projetos em destaque, já ordenados pela página. */
   projetos: CollectionEntry<'projetos'>[];
 }
 
 const { projetos } = Astro.props;
 
-// Slides do carrossel: capa do projeto (ou o placeholder atual) + metadados.
-// Resolve uma versão raster otimizada que o motor sobe como textura WebGL.
 const slides = await Promise.all(
   projetos.map(async (projeto) => {
     const fonte = projeto.data.capa ?? siteDeJandira;
@@ -31,21 +28,11 @@ const slides = await Promise.all(
 
 const total = String(slides.length).padStart(2, '0');
 
-// Botão redondo dos controles, no estilo do site.
 const BOTAO =
   'border-white/25 text-white hover:border-white/50 hover:bg-white/10 focus-visible:outline-peri-300 grid size-11 place-items-center rounded-full border transition-colors focus-visible:outline-2 focus-visible:outline-offset-2';
 ---
 
-<!-- PROJETOS EM DESTAQUE — carrossel côncavo em WebGL2 (progressive enhancement).
-     Sem JS/WebGL cai na grade de cards, que é a camada indexável e acessível.
-     scroll-mt-24 compensa o header fixo do Layout quando chega pela âncora. -->
 <section id="projetos" class="w-full scroll-mt-24 bg-[#6384c8]">
-  <!-- Fundo #6384c8 full-width na section (mesma cor do backgroundColor do
-       neon). O <neon-reveal> fica delimitado à largura do conteúdo (max-w-6xl):
-       o glow/tubo e o cabeçalho ficam contidos. `forceMode: 'dark'` mantém o
-       feixe aditivo/reluzente mesmo sobre esse fundo claro (a luminância do
-       #6384c8 fica raspando no limite e cairia no modo pastel). O glow desce por
-       trás do cabeçalho e do slider (slot `foreground`), sem cobrir o slider. -->
   <NeonReveal
     class="mx-auto max-w-6xl"
     edgeFade="30%"
@@ -61,7 +48,6 @@ const BOTAO =
       length: 1,
     }}
   >
-    <!-- Cabeçalho revelado pelo neon (continua no DOM / indexável). -->
     <div class="text-center">
       <p class="text-xs font-semibold tracking-widest text-white/50 uppercase">
         Projetos em destaque
@@ -69,14 +55,11 @@ const BOTAO =
       <h2 class="display mt-3 text-5xl text-white sm:text-7xl">Resultados reais</h2>
     </div>
 
-    <!-- Primeiro plano: acima do glow, nunca coberto. -->
     <div slot="foreground" class="px-6 pb-14 sm:px-12 sm:pb-20">
       {
         slides.length > 0 ? (
           <>
             <div class="relative z-10 flex justify-end">
-              <!-- Leve rotação p/ acompanhar a curvatura/perspectiva do slider
-                   na direita. origin-right ancora na borda; ajuste o grau/sinal. -->
               <a
                 href="/projetos"
                 class="inline-flex origin-right rotate-357 items-center gap-2 px-2 py-2.5 text-sm font-semibold text-white transition-colors hover:text-white/70"
@@ -144,8 +127,6 @@ const BOTAO =
 </section>
 
 <style>
-  /* Rede de segurança: o atributo `hidden` (trocado pelo script no enhancement)
-     vence o display mesmo se o preflight do Tailwind mudar. */
   [data-concave-root][hidden],
   [data-fallback][hidden] {
     display: none;
@@ -205,7 +186,7 @@ const BOTAO =
       inertia: 0.5,
       pauseOnHover: true,
       draggable: true,
-      wheel: false, // não sequestra o scroll da página
+      wheel: false,
       paused: false,
       reducedMotion: reduceMotion.matches,
       dpr: 2,
@@ -243,10 +224,8 @@ const BOTAO =
       },
     });
 
-    // Sem WebGL2: mantém a grade acessível e descarta o carrossel.
     if (!engine) continue;
 
-    // Progressive enhancement: revela o carrossel, esconde a grade.
     root.hidden = false;
     if (fallback) fallback.hidden = true;
 
@@ -254,7 +233,6 @@ const BOTAO =
     engine.setItems(slides.map((s) => s.src));
     renderCaption(0);
 
-    // O site é só claro, mas recalcula a paleta se o SO alternar o esquema.
     matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
       config.palette = readPalette(stage, 'transparent');
       engine.invalidate();
@@ -263,7 +241,6 @@ const BOTAO =
       config.reducedMotion = reduceMotion.matches;
     });
 
-    // Arrasto no palco.
     stage.addEventListener('pointerdown', (e) => engine.pointerDown(e));
     stage.addEventListener('pointermove', (e) => engine.pointerMove(e));
     stage.addEventListener('pointerup', (e) => engine.pointerUp(e));
@@ -273,7 +250,6 @@ const BOTAO =
     prevBtn?.addEventListener('click', () => engine.previous());
     nextBtn?.addEventListener('click', () => engine.next());
 
-    // Teclado: só quando o foco está na região (não nos botões internos).
     root.addEventListener('keydown', (e) => {
       if (e.target !== e.currentTarget) return;
       if (e.key === 'ArrowRight') {

@@ -3,19 +3,15 @@ import Icon from '../Icon.astro';
 import { SITE, STACK } from '../../consts';
 
 interface Props {
-  /** Âncora usada pelo menu do topo. */
   id?: string;
 }
 
 const { id = 'contato' } = Astro.props;
 
-// Ids derivados da prop: o componente pode aparecer mais de uma vez na página
-// sem duplicar id no DOM (o que quebraria o aria-labelledby).
 const tituloId = `${id}-titulo`;
 const stackTituloId = `${id}-stack-titulo`;
 ---
 
-<!-- STACK — faixa creme: rótulo à esquerda, tecnologias em pílulas. -->
 <section class="bg-butter-50 w-full py-20 sm:py-28">
   <div class="mx-auto max-w-7xl px-6 sm:px-10">
     <div class="grid gap-6 sm:grid-cols-[auto_minmax(0,1fr)] sm:items-start sm:gap-10">
@@ -39,13 +35,11 @@ const stackTituloId = `${id}-stack-titulo`;
   </div>
 </section>
 
-<!-- CTA FINAL — faixa azul escura full width, composição centralizada. -->
 <section
   id={id}
   aria-labelledby={tituloId}
   class="bg-peri-900 relative w-full scroll-mt-24 overflow-hidden py-20 sm:py-28 lg:py-32"
 >
-  <!-- Enfeite: mesma órbita do hero, discreta atrás do texto. -->
   <div class="pointer-events-none absolute inset-0 hidden sm:block" aria-hidden="true">
     <svg viewBox="0 0 1200 600" fill="none" preserveAspectRatio="xMidYMid slice" class="size-full">
       <circle cx="600" cy="300" r="250" class="stroke-peri-300/25" stroke-width="1.5" />

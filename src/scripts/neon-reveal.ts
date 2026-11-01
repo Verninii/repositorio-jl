@@ -1,15 +1,3 @@
-/**
- * <neon-reveal> — custom element que revela o conteúdo filho com uma varredura
- * de "tubo de neon" desenhada em WebGL por trás (o conteúdo é mascarado por CSS
- * e vai aparecendo conforme a luz passa).
- *
- * Já era agnóstico de framework (Web Component puro); aqui ele só foi tipado e
- * exposto via `defineNeonReveal()`. Sem dependências. Sem WebGL, o conteúdo
- * aparece normalmente (degrada para "aceso"); `prefers-reduced-motion` idem.
- *
- * Configuração via atributo `data-config` (JSON). Ver NeonReveal.astro.
- */
-
 export type NeonDirection = 'down' | 'up' | 'left' | 'right';
 export type NeonExpand = 'center' | 'left' | 'right';
 export type NeonTrigger = 'mount' | 'inView' | 'manual';
@@ -40,9 +28,6 @@ export interface NeonConfig {
   paused: boolean;
   dpr: number;
   scrollThreshold: number;
-  /** Força o modo de render, ignorando a detecção pela luminância do fundo.
-   *  'dark' mantém o feixe aditivo/reluzente (blend screen) mesmo sobre um fundo
-   *  claro; 'light' força o modo pastel. Sem valor = detecta automático. */
   forceMode?: 'light' | 'dark';
 }
 
@@ -87,7 +72,6 @@ const EASINGS: Record<NeonEasing, (t: number) => number> = {
   linear: (t) => t,
 };
 
-// Rampa de piscada da ignição (tubo de neon acende tremeluzindo).
 const FLICKER_RAMP: [number, number][] = [
   [0, 0.85], [0.05, 0.04], [0.11, 0.7], [0.16, 0], [0.27, 0.4], [0.31, 0.06],
   [0.4, 1], [0.47, 0.22], [0.53, 0.95], [0.6, 0.55], [0.68, 1],
@@ -112,10 +96,8 @@ const hash = (e: number) => {
 
 const CUT_MS = 240;
 const BURST_MS = 420;
-/** Duração da ignição em função do flicker. */
 const igniteMs = (flicker: number) => (flicker > 0 ? 520 + 380 * Math.min(flicker, 1) : 360);
 
-// ─── Cor ─────────────────────────────────────────────────────────────────────
 let probeCtx: CanvasRenderingContext2D | null = null;
 
 function parseColor(css: string): [number, number, number, number] {
@@ -133,7 +115,6 @@ function parseColor(css: string): [number, number, number, number] {
   return [d[0] / 255, d[1] / 255, d[2] / 255, d[3] / 255];
 }
 
-/** Resolve uma cor que pode ser uma var/keyword CSS, no contexto do host. */
 function resolveColor(host: HTMLElement, css: string): [number, number, number, number] | null {
   const probe = document.createElement('span');
   probe.style.color = css;
@@ -171,42 +152,39 @@ function hslToRgb([h, s, l]: number[]): number[] {
   return [comp(h + 1 / 3), comp(h), comp(h - 1 / 3)];
 }
 
-/** Cor do "vidro" do tubo — leve variação da cor do neon. */
 const glassColor = (rgb: number[]) => {
   const [h, s, l] = rgbToHsl(rgb);
   return hslToRgb([h, Math.min(1, s * 1.1 + 0.08), l * 0.6]);
 };
 const luma = (c: number[]) => 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
 
-// ─── Shaders (WebGL1 / GLSL ES 1.00) ──────────────────────────────────────────
 const VERT = 'attribute vec2 aPos; void main() { gl_Position = vec4(aPos, 0.0, 1.0); }';
 
 const FRAG = `
 precision highp float;
-uniform vec2 uRes;      // css px
-uniform vec2 uScale;    // device px per css px
-uniform float uCanvasH; // device px
-uniform float uDir;     // 0 down, 1 up, 2 right, 3 left
+uniform vec2 uRes;
+uniform vec2 uScale;
+uniform float uCanvasH;
+uniform float uDir;
 uniform float uMirror;
 uniform float uInset;
 uniform float uThick;
 uniform float uLen;
-uniform float uExpand;  // -1 start, 0 centre, 1 end
-uniform float uLit;     // lit share of the tube
+uniform float uExpand;
+uniform float uLit;
 uniform float uBright;
-uniform float uFront;   // depth of the light front, px from the tube line
+uniform float uFront;
 uniform float uFeather;
 uniform float uGlow;
 uniform float uSpill;
 uniform float uReach;
 uniform float uIntensity;
-uniform float uLight;   // 1 = light background
+uniform float uLight;
 uniform vec3 uC0;
 uniform vec3 uC1;
 uniform vec3 uC2;
 uniform vec3 uCore;
 
-// (along-tube coordinate, distance in front of the tube, frame length along, frame depth)
 vec4 frameOf(float dir, vec2 p) {
   if (dir < 0.5) return vec4(p.x, p.y - uInset, uRes.x, uRes.y);
   if (dir < 1.5) return vec4(p.x, uRes.y - p.y - uInset, uRes.x, uRes.y);
@@ -215,7 +193,6 @@ vec4 frameOf(float dir, vec2 p) {
 }
 float opposite(float d) { return d < 0.5 ? 1.0 : (d < 1.5 ? 0.0 : (d < 2.5 ? 3.0 : 2.0)); }
 
-// returns (core, halo, glass, spill); t = position along the colour ramp
 vec4 tube(vec4 f, out float t) {
   float u = f.x;
   float v = f.y;
@@ -270,11 +247,9 @@ void main() {
   float sp = a.w + b.w;
   vec3 spc = (a.w * ramp(ta) + b.w * ramp(tb)) / max(sp, 1e-4);
 
-  // Dither: soft glows over large areas would band in 8 bits.
   float n = (fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453) - 0.5) / 255.0;
 
   if (uLight < 0.5) {
-    // Additive light; the canvas is screen-blended over the stage.
     vec3 col = glass * uC0 * 0.10
              + B * halo * uC0 * 0.8
              + B * uSpill * 0.32 * sp * spc
@@ -283,7 +258,6 @@ void main() {
     col = clamp(col + n, 0.0, 1.0);
     gl_FragColor = vec4(col, max(col.r, max(col.g, col.b)));
   } else {
-    // Light stage: pastel washes layered with normal alpha.
     float I = uIntensity;
     vec4 acc = vec4(0.0);
     float aS = clamp(B * uSpill * 0.30 * sp * I, 0.0, 0.9);
@@ -344,7 +318,6 @@ function initGL(canvas: HTMLCanvasElement): GLCtx | null {
   return { gl, program, u };
 }
 
-// Elementos que, se clicados, não disparam o replay (são interativos).
 const INTERACTIVE =
   'a, button, input, select, textarea, label, summary, video, audio, [role="button"], [role="link"], [contenteditable="true"], [tabindex]:not([tabindex="-1"])';
 
@@ -396,7 +369,6 @@ interface Palette {
   core: number[];
 }
 
-/** Define o custom element `<neon-reveal>` (idempotente). */
 export function defineNeonReveal(tag = 'neon-reveal'): void {
   if (typeof window === 'undefined' || customElements.get(tag)) return;
 

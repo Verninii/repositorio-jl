@@ -5,10 +5,8 @@ interface Props {
   title?: string;
   description?: string;
   image?: string;
-  /** "website" para páginas comuns, "article" para páginas de projeto. */
   type?: 'website' | 'article';
   publishedAt?: Date;
-  /** JSON-LD extra específico da página. */
   schema?: Record<string, unknown>;
   noindex?: boolean;
 }
