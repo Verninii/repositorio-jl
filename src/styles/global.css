@@ -55,6 +55,17 @@
   --color-bege: var(--color-sol-200);
   --color-azul-claro: var(--color-ceu-300);
 
+  /* Azul-noite — seção "processo" e CTA final: fundo azul profundo com
+     brilhos difusos, cartões de vidro fosco (branco a 10% + blur) e botões
+     brancos em pílula. noite-100/200 são os campos claros do cartão branco. */
+  --color-noite-100: #e9f0fd;
+  --color-noite-200: #d3e2fa;
+  --color-noite-300: #8fb8f5;
+  --color-noite-500: #3b7be0;
+  --color-noite-700: #1d4ab0;
+  --color-noite-900: #0b1e4a;
+  --color-noite-950: #071433;
+
   /* Paleta dos depoimentos (árvore em flor). O glicinia-900 não vem da
      referência: é um azul bem escuro só p/ o texto sobre o azul-claro. */
   --color-glicinia-900: #0f2b57;

@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import Icon from '../components/Icon.astro';
+import IlustracaoIso from '../components/IlustracaoIso.astro';
 import Hero from '../components/sections/Hero.astro';
 import Depoimentos from '../components/sections/Depoimentos.astro';
 import ProjetosDestaque from '../components/sections/ProjetosDestaque.astro';
@@ -17,78 +18,140 @@ const destaques = projetos.slice(0, 4);
 <Layout description={SITE.description} headerSobreposto>
   <Hero />
 
-  <div class="mx-auto max-w-6xl space-y-4 px-4 pt-4 pb-4">
-    <!-- SERVIÇOS -->
-    <section
-      class="bg-peri-500 overflow-hidden rounded-3xl px-6 py-14 text-white sm:px-12 sm:py-20"
-    >
-      <div class="grid gap-12 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-        <div>
-          <p class="text-butter-200 text-xs font-semibold tracking-widest uppercase">
-            No que trabalhamos
-          </p>
-          <h2 class="display text-butter-100 mt-4 text-5xl text-balance sm:text-6xl">
-            Frentes que destravam um e-commerce
-          </h2>
-          <p class="mt-5 max-w-sm leading-relaxed text-white/85">
-            Cada projeto entra com um time pequeno e dedicado. Sem repasse para terceiros, sem
-            código que você não pode ler depois.
-          </p>
-        </div>
+  <!-- SERVIÇOS — faixa de ponta a ponta (fora do contêiner max-w-6xl); título à esquerda e, à direita, um painel de vidro com os
+       serviços numa lista expansível (<details name> = só um aberto por vez,
+       sem JS e acessível por teclado). O primeiro já vem aberto, então o
+       conteúdo aparece mesmo sem interagir. O painel é azul-escuro
+       translúcido (não branco) para o texto branco manter contraste. -->
+  <section
+    id="servicos"
+    class="relative isolate w-full scroll-mt-24 overflow-hidden bg-[linear-gradient(160deg,#16399a,var(--color-noite-700)_60%,#2a62c8)] py-20 text-white sm:py-28 lg:py-32"
+  >
+    <div class="absolute inset-0 -z-10" aria-hidden="true">
+      <div class="bg-noite-300/30 absolute -top-40 -left-32 size-[30rem] rounded-full blur-[110px]"></div>
+      <div class="bg-noite-950/40 absolute -right-32 -bottom-48 size-[30rem] rounded-full blur-[110px]"></div>
+    </div>
 
-        <ul class="space-y-3">
-          {
-            SERVICOS.map((servico) => (
-              <li class="flex items-start gap-4 rounded-2xl bg-white/10 px-5 py-4 transition-colors hover:bg-white/15">
-                <span class="bg-butter-200 text-peri-700 mt-0.5 grid size-10 shrink-0 place-items-center rounded-xl">
+    <div class="mx-auto grid max-w-6xl gap-12 px-6 sm:px-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+      <div class="lg:sticky lg:top-28 lg:self-start">
+        <p class="text-noite-100/85 text-sm font-medium">No que trabalhamos</p>
+        <h2 class="mt-5 text-5xl leading-[1.02] font-bold tracking-[-0.04em] text-balance sm:text-6xl">
+          Frentes que destravam um e-commerce
+        </h2>
+        <p class="mt-6 max-w-sm leading-relaxed text-white/85">
+          Cada projeto entra com um time pequeno e dedicado. Sem repasse para terceiros, sem
+          código que você não pode ler depois.
+        </p>
+        <a
+          href="/projetos"
+          class="text-noite-900 hover:bg-noite-100 focus-visible:outline-noite-100 mt-8 inline-flex min-h-12 items-center gap-2 rounded-full bg-white px-6 py-3.5 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
+        >
+          Ver projetos
+          <Icon name="arrow" class="size-4" />
+        </a>
+      </div>
+
+      <div
+        class="bg-noite-950/35 rounded-3xl border border-white/20 px-5 shadow-[inset_0_1px_0_0_rgb(255_255_255/0.25)] backdrop-blur-xl sm:px-8"
+      >
+        {
+          SERVICOS.map((servico, i) => (
+            <details
+              name="servicos"
+              open={i === 0}
+              class="group border-b border-white/15 last:border-b-0"
+            >
+              <summary class="flex cursor-pointer list-none items-center gap-4 py-6 marker:content-none focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-white [&::-webkit-details-marker]:hidden">
+                <span
+                  class="w-7 shrink-0 text-sm tabular-nums text-white/60 transition-colors group-open:text-white"
+                  aria-hidden="true"
+                >
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <h3 class="flex-1 text-xl font-semibold tracking-[-0.02em] sm:text-2xl">
+                  {servico.titulo}
+                </h3>
+                <span
+                  class="grid size-10 shrink-0 place-items-center rounded-full border border-white/30 transition-colors group-hover:border-white/60 group-open:border-white group-open:bg-white group-open:text-noite-900"
+                  aria-hidden="true"
+                >
+                  <Icon name="arrow" class="size-4 transition-transform duration-300 group-open:-rotate-90" />
+                </span>
+              </summary>
+              <div class="flex items-start gap-4 pr-14 pb-7 pl-11 sm:pr-16">
+                <span
+                  class="text-noite-900 mt-0.5 grid size-10 shrink-0 place-items-center rounded-xl bg-white"
+                  aria-hidden="true"
+                >
                   <Icon name={servico.icone} class="size-5" />
                 </span>
-                <div>
-                  <h3 class="font-semibold">{servico.titulo}</h3>
-                  <p class="mt-1 text-sm leading-relaxed text-white/80">{servico.texto}</p>
-                </div>
-              </li>
-            ))
-          }
-        </ul>
+                <p class="leading-relaxed text-white/85">{servico.texto}</p>
+              </div>
+            </details>
+          ))
+        }
       </div>
-    </section>
+    </div>
+  </section>
 
-  </div>
+  <!-- PROCESSO — vidro fosco sobre azul-noite (referência: layout 3D em azul).
+       Fundo com brilhos difusos (blur), título gigante em três frases curtas,
+       cidade isométrica em SVG à direita e as quatro etapas como cartões de
+       vidro (branco a 10% + backdrop-blur + brilho no topo). Os brilhos ficam
+       longe dos cartões para o texto branco manter contraste. -->
+  <section
+    id="processo"
+    class="relative isolate w-full scroll-mt-24 overflow-hidden bg-[linear-gradient(165deg,var(--color-noite-950),var(--color-noite-900)_55%,#16399a)] py-20 text-white sm:py-28 lg:py-32"
+  >
+    <div class="absolute inset-0 -z-10" aria-hidden="true">
+      <div class="bg-noite-500/45 absolute -top-32 -right-24 size-[40rem] rounded-full blur-[110px]"></div>
+      <div class="bg-noite-700/50 absolute -bottom-48 -left-32 size-[34rem] rounded-full blur-[110px]"></div>
+    </div>
 
-  <!-- PROCESSO — faixa azul de ponta a ponta (fora do contêiner max-w-6xl),
-       com etapas bege e número em círculo azul-claro. O padding interno
-       (px-10 / sm:px-16) soma o gutter do contêiner com o dos cards, então o
-       conteúdo alinha com as seções vizinhas. Nos telões, uma linha liga os
-       círculos e reforça a ideia de sequência. -->
-  <section id="processo" class="bg-azul w-full scroll-mt-24 py-24 sm:py-32 lg:py-40">
-    <div class="mx-auto max-w-6xl px-10 sm:px-16">
-      <div class="flex flex-wrap items-end justify-between gap-6">
+    <div class="mx-auto max-w-6xl px-6 sm:px-10">
+      <div class="grid items-center gap-10 lg:grid-cols-2 lg:gap-6">
         <div>
-          <p class="rotulo text-azul-claro">(04) — Como trabalhamos</p>
-          <h2 class="display-serif text-bege mt-5 text-5xl leading-[1.05] sm:text-7xl sm:leading-[1.05]">
-            Nosso <em>processo</em>
+          <p class="text-noite-300 text-sm font-medium">Como trabalhamos</p>
+          <h2 class="mt-5 text-6xl leading-[0.98] font-bold tracking-[-0.04em] sm:text-8xl">
+            Entenda.<br />Planeje.<br />Entregue.
           </h2>
+          <p class="mt-7 max-w-md text-base leading-relaxed text-white/80 sm:text-lg">
+            Quatro etapas, sempre nessa ordem — você sabe em que ponto o projeto está do primeiro
+            ao último dia.
+          </p>
+          <a
+            href={`mailto:${SITE.email}`}
+            class="text-noite-900 hover:bg-noite-100 focus-visible:outline-noite-300 mt-9 inline-flex min-h-12 items-center gap-2 rounded-full bg-white px-6 py-3.5 text-sm font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
+          >
+            Falar com a gente
+            <Icon name="arrow" class="size-4" />
+          </a>
         </div>
-        <p class="text-azul-claro max-w-sm text-[0.9375rem] leading-relaxed">
-          Quatro etapas, sempre nessa ordem — você sabe em que ponto o projeto está do primeiro
-          ao último dia.
-        </p>
+
+        <IlustracaoIso tipo="torres" class="mx-auto w-full max-w-md drop-shadow-[0_30px_40px_rgb(2_8_30/0.55)] lg:max-w-none" />
       </div>
 
-      <ol class="relative mt-16 grid gap-4 sm:mt-20 sm:grid-cols-2 lg:mt-24 lg:grid-cols-4">
-        <span
-          class="bg-azul-claro/30 absolute top-[3.25rem] right-[12.5%] left-[12.5%] hidden h-px lg:block"
-          aria-hidden="true"
-        ></span>
+      <ol class="mt-16 grid gap-4 sm:mt-20 sm:grid-cols-2 lg:grid-cols-4">
         {
           PROCESSO.map((etapa, i) => (
-            <li class="bg-bege text-azul relative flex flex-col rounded-3xl p-7 sm:p-8 lg:min-h-80">
-              <span class="bg-azul-claro grid size-12 place-items-center rounded-full text-sm font-semibold tabular-nums">
-                {String(i + 1).padStart(2, '0')}
-              </span>
-              <h3 class="display-serif mt-8 text-[1.75rem] leading-[1.15]">{etapa.titulo}</h3>
-              <p class="text-azul/75 mt-3 text-[0.9375rem] leading-relaxed">{etapa.texto}</p>
+            <li class="group relative flex flex-col rounded-3xl border border-white/25 bg-white/10 p-5 shadow-[inset_0_1px_0_0_rgb(255_255_255/0.35),0_24px_48px_-24px_rgb(2_8_30/0.7)] backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:bg-white/15">
+              <div class="flex items-center justify-between">
+                <p class="text-xs font-medium tracking-wide text-white/80">
+                  Etapa {String(i + 1).padStart(2, '0')}
+                </p>
+                <span
+                  class="text-noite-900 grid size-9 place-items-center rounded-full bg-white"
+                  aria-hidden="true"
+                >
+                  <Icon name="arrow" class="size-4 -rotate-45 transition-transform duration-300 group-hover:rotate-0" />
+                </span>
+              </div>
+              <IlustracaoIso
+                tipo={['cubos', 'cilindros', 'grade', 'discos'][i] as 'cubos'}
+                class="mx-auto mt-4 h-32 w-full max-w-52"
+              />
+              <h3 class="mt-4 text-2xl font-semibold tracking-[-0.02em]">{etapa.titulo}</h3>
+              <p class="mt-2 text-sm leading-relaxed text-white/80">{etapa.texto}</p>
             </li>
           ))
         }
@@ -115,22 +178,87 @@ const destaques = projetos.slice(0, 4);
       </ul>
     </section>
 
-    <!-- CTA -->
-    <section class="bg-peri-900 rounded-3xl px-6 py-16 text-center sm:px-12 sm:py-24">
-      <h2 class="display text-butter-200 mx-auto max-w-3xl text-5xl sm:text-7xl">
-        Tem um projeto em mente?
-      </h2>
-      <p class="text-peri-300 mx-auto mt-5 max-w-xl leading-relaxed">
-        Conte pra gente o que você precisa construir. Respondemos com um diagnóstico honesto do
-        escopo — inclusive se não formos o time certo para o trabalho.
-      </p>
-      <a
-        href={`mailto:${SITE.email}`}
-        class="bg-butter-200 text-ink-900 hover:bg-butter-100 mt-9 inline-flex items-center gap-2 rounded-full px-8 py-4 font-semibold transition-colors"
-      >
-        <Icon name="mail" class="size-5" />
-        {SITE.email}
-      </a>
+    <!-- CTA — mesmo vidro azul-noite: balão de fala branco com o convite e um
+         cartão branco de contato (campos em pílula, como o formulário da
+         referência). Os campos são links reais (e-mail e telefone) — não há
+         backend de formulário. -->
+    <section
+      class="relative isolate overflow-hidden rounded-3xl bg-[linear-gradient(165deg,var(--color-noite-950),var(--color-noite-900)_55%,#16399a)] px-6 py-14 text-white sm:px-12 sm:py-20 lg:px-16"
+    >
+      <div class="absolute inset-0 -z-10" aria-hidden="true">
+        <div class="bg-noite-500/40 absolute -top-40 -left-24 size-[30rem] rounded-full blur-[100px]"></div>
+        <div class="bg-noite-700/50 absolute -right-24 -bottom-48 size-[30rem] rounded-full blur-[100px]"></div>
+      </div>
+
+      <div class="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+        <div>
+          <p class="text-noite-300 text-sm font-medium">Próximo passo</p>
+          <h2 class="mt-5 text-5xl leading-[1] font-bold tracking-[-0.04em] text-balance sm:text-7xl">
+            Tem um projeto em mente?
+          </h2>
+
+          <div class="text-noite-900 relative mt-10 max-w-md rounded-3xl bg-white p-6 shadow-[0_24px_48px_-24px_rgb(2_8_30/0.8)] sm:p-7">
+            <p class="text-sm font-semibold">Conte pra gente</p>
+            <p class="text-noite-900/75 mt-2 text-sm leading-relaxed">
+              Diga o que você precisa construir. Respondemos com um diagnóstico honesto do escopo —
+              inclusive se não formos o time certo para o trabalho.
+            </p>
+            <svg
+              viewBox="0 0 24 16"
+              class="absolute -bottom-3.5 left-10 h-4 w-6 text-white"
+              aria-hidden="true"
+            >
+              <path d="M0 0h24L8 16z" fill="currentColor"></path>
+            </svg>
+          </div>
+        </div>
+
+        <div class="text-noite-900 rounded-3xl bg-white p-6 shadow-[0_24px_48px_-24px_rgb(2_8_30/0.8)] sm:p-8">
+          <p class="text-lg font-semibold tracking-[-0.01em]">Fale com a gente</p>
+          <div class="mt-5 space-y-3">
+            <a
+              href={`mailto:${SITE.email}`}
+              class="bg-noite-100 hover:bg-noite-200 focus-visible:outline-noite-700 group flex min-h-12 items-center justify-between gap-3 rounded-full px-5 py-3 text-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
+            >
+              <span class="truncate">{SITE.email}</span>
+              <Icon name="arrow" class="size-4 shrink-0 transition-transform group-hover:translate-x-0.5" />
+            </a>
+            <a
+              href={SITE.telefone.link}
+              class="bg-noite-100 hover:bg-noite-200 focus-visible:outline-noite-700 group flex min-h-12 items-center justify-between gap-3 rounded-full px-5 py-3 text-sm transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
+            >
+              <span>{SITE.telefone.exibicao}</span>
+              <Icon name="arrow" class="size-4 shrink-0 transition-transform group-hover:translate-x-0.5" />
+            </a>
+          </div>
+
+          <div class="mt-6 flex flex-wrap items-center justify-between gap-4">
+            <ul class="flex gap-2">
+              {
+                SITE.links.map((link) => (
+                  <li>
+                    <a
+                      href={link.href}
+                      target="_blank"
+                      rel="noopener noreferrer me"
+                      class="bg-noite-900 hover:bg-noite-700 focus-visible:outline-noite-700 inline-flex h-11 items-center rounded-full px-4 text-xs font-semibold text-white transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+            <a
+              href={`mailto:${SITE.email}`}
+              class="bg-noite-900 hover:bg-noite-700 focus-visible:outline-noite-700 inline-flex min-h-11 items-center gap-2 rounded-full px-5 py-2.5 text-sm font-semibold text-white transition-colors focus-visible:outline-2 focus-visible:outline-offset-2"
+            >
+              <Icon name="mail" class="size-4" />
+              Enviar e-mail
+            </a>
+          </div>
+        </div>
+      </div>
     </section>
   </div>
 </Layout>

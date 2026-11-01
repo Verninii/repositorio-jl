@@ -1,0 +1,165 @@
+---
+// Ilustrações isométricas em SVG (cubos, cilindros e discos de vidro em azul
+// brilhante). Sem imagem externa: escalam em qualquer tamanho e herdam o
+// visual de "objeto 3D" só com gradientes. Decorativas (aria-hidden).
+interface Props {
+  tipo: 'cubos' | 'cilindros' | 'grade' | 'discos' | 'torres';
+  class?: string;
+}
+
+const { tipo, class: className } = Astro.props;
+
+type Forma =
+  | { k: 'cubo'; cx: number; cy: number; s: number; h: number }
+  | { k: 'cil'; cx: number; cy: number; r: number; h: number }
+  | { k: 'disco'; cx: number; cy: number; r: number };
+
+// Cubo ancorado no centro da face de cima: a = meia largura, b = meia altura
+// da losango (proporção isométrica 0,87 : 0,5).
+const faces = (cx: number, cy: number, s: number, h: number) => {
+  const a = s * 0.87;
+  const b = s * 0.5;
+  return {
+    topo: `M${cx} ${cy - b}L${cx + a} ${cy}L${cx} ${cy + b}L${cx - a} ${cy}Z`,
+    esq: `M${cx - a} ${cy}L${cx} ${cy + b}L${cx} ${cy + b + h}L${cx - a} ${cy + h}Z`,
+    dir: `M${cx + a} ${cy}L${cx} ${cy + b}L${cx} ${cy + b + h}L${cx + a} ${cy + h}Z`,
+  };
+};
+
+// Corpo do cilindro: laterais retas e base em arco (sweep 0 = por baixo).
+const corpo = (cx: number, cy: number, r: number, h: number) =>
+  `M${cx - r} ${cy}L${cx - r} ${cy + h}A${r} ${r * 0.4} 0 0 0 ${cx + r} ${cy + h}L${cx + r} ${cy}Z`;
+
+// Grade 3x3 de blocos baixos, de trás pra frente.
+const grade: Forma[] = [];
+for (let soma = 0; soma <= 4; soma++) {
+  for (let i = 0; i < 3; i++) {
+    const j = soma - i;
+    if (j < 0 || j > 2) continue;
+    grade.push({ k: 'cubo', cx: 80 + (i - j) * 12.2, cy: 30 + (i + j) * 7, s: 12.5, h: 7 });
+  }
+}
+
+// Formas listadas de trás pra frente (ordem de desenho).
+const cenas: Record<Props['tipo'], { viewBox: string; formas: Forma[] }> = {
+  cubos: {
+    viewBox: '0 0 160 100',
+    formas: [
+      { k: 'cubo', cx: 58, cy: 40, s: 20, h: 22 },
+      { k: 'cubo', cx: 102, cy: 46, s: 20, h: 32 },
+      { k: 'cubo', cx: 80, cy: 62, s: 20, h: 14 },
+    ],
+  },
+  cilindros: {
+    viewBox: '0 0 160 100',
+    formas: [
+      { k: 'cil', cx: 80, cy: 26, r: 15, h: 52 },
+      { k: 'cil', cx: 42, cy: 46, r: 15, h: 30 },
+      { k: 'cil', cx: 118, cy: 52, r: 15, h: 24 },
+    ],
+  },
+  grade: { viewBox: '0 0 160 100', formas: grade },
+  discos: {
+    viewBox: '0 0 160 100',
+    formas: [
+      { k: 'cubo', cx: 80, cy: 62, s: 38, h: 6 },
+      { k: 'disco', cx: 100, cy: 48, r: 15 },
+      { k: 'disco', cx: 60, cy: 52, r: 15 },
+      { k: 'disco', cx: 82, cy: 60, r: 15 },
+    ],
+  },
+  torres: {
+    viewBox: '0 0 400 320',
+    formas: [
+      { k: 'cil', cx: 205, cy: 70, r: 22, h: 130 },
+      { k: 'cubo', cx: 150, cy: 120, s: 40, h: 74 },
+      { k: 'cubo', cx: 256, cy: 124, s: 44, h: 64 },
+      { k: 'cil', cx: 112, cy: 168, r: 16, h: 44 },
+      { k: 'cubo', cx: 300, cy: 172, s: 26, h: 38 },
+      { k: 'cubo', cx: 205, cy: 176, s: 50, h: 42 },
+      { k: 'cil', cx: 160, cy: 214, r: 12, h: 22 },
+    ],
+  },
+};
+
+const { viewBox, formas } = cenas[tipo];
+const grande = tipo === 'torres';
+---
+
+<svg viewBox={viewBox} class={className} fill="none" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="iso-topo" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#b9d4ff"></stop>
+      <stop offset="1" stop-color="#5f98f2"></stop>
+    </linearGradient>
+    <linearGradient id="iso-esq" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3b6fe0"></stop>
+      <stop offset="1" stop-color="#1f3f9e"></stop>
+    </linearGradient>
+    <linearGradient id="iso-dir" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#244ab5"></stop>
+      <stop offset="1" stop-color="#12276a"></stop>
+    </linearGradient>
+    <linearGradient id="iso-cil" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#1d3f9e"></stop>
+      <stop offset="0.4" stop-color="#4f88f0"></stop>
+      <stop offset="1" stop-color="#16307f"></stop>
+    </linearGradient>
+    <linearGradient id="iso-cil-topo" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#d2e3ff"></stop>
+      <stop offset="1" stop-color="#78a8f7"></stop>
+    </linearGradient>
+    <linearGradient id="iso-vidro" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.55"></stop>
+      <stop offset="1" stop-color="#9dc0ff" stop-opacity="0.18"></stop>
+    </linearGradient>
+    <linearGradient id="iso-anel" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2a55c4"></stop>
+      <stop offset="0.5" stop-color="#8fb8f5"></stop>
+      <stop offset="1" stop-color="#2a55c4"></stop>
+    </linearGradient>
+  </defs>
+
+  {
+    grande && (
+      <>
+        <ellipse cx="200" cy="262" rx="190" ry="52" fill="#0b1e4a" stroke="url(#iso-anel)" stroke-width="3" />
+        <ellipse cx="200" cy="256" rx="170" ry="44" fill="#102a6b" stroke="url(#iso-anel)" stroke-width="2" opacity="0.9" />
+        <ellipse cx="200" cy="250" rx="140" ry="34" fill="#0b1e4a" opacity="0.8" />
+        <ellipse cx="62" cy="52" rx="26" ry="9" fill="#fff" opacity="0.45" />
+        <ellipse cx="76" cy="46" rx="16" ry="8" fill="#fff" opacity="0.45" />
+        <ellipse cx="340" cy="38" rx="30" ry="10" fill="#fff" opacity="0.4" />
+        <ellipse cx="326" cy="32" rx="18" ry="9" fill="#fff" opacity="0.4" />
+      </>
+    )
+  }
+
+  {
+    formas.map((f) => {
+      if (f.k === 'cubo') {
+        const p = faces(f.cx, f.cy, f.s, f.h);
+        return (
+          <g stroke="#fff" stroke-opacity="0.22" stroke-width="0.6" stroke-linejoin="round">
+            <path d={p.esq} fill="url(#iso-esq)" />
+            <path d={p.dir} fill="url(#iso-dir)" />
+            <path d={p.topo} fill="url(#iso-topo)" />
+          </g>
+        );
+      }
+      if (f.k === 'cil') {
+        return (
+          <g stroke="#fff" stroke-opacity="0.22" stroke-width="0.6">
+            <path d={corpo(f.cx, f.cy, f.r, f.h)} fill="url(#iso-cil)" />
+            <ellipse cx={f.cx} cy={f.cy} rx={f.r} ry={f.r * 0.4} fill="url(#iso-cil-topo)" />
+          </g>
+        );
+      }
+      return (
+        <g stroke="#fff" stroke-opacity="0.7" stroke-width="0.8">
+          <ellipse cx={f.cx} cy={f.cy + 3} rx={f.r} ry={f.r * 0.4} fill="#9dc0ff" fill-opacity="0.25" />
+          <ellipse cx={f.cx} cy={f.cy} rx={f.r} ry={f.r * 0.4} fill="url(#iso-vidro)" />
+        </g>
+      );
+    })
+  }
+</svg>
